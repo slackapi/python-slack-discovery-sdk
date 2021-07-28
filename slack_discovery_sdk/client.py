@@ -2367,3 +2367,19 @@ class WebClient(BaseClient):
             kwargs.update({"outputs": outputs})
 
         return self.api_call("workflows.updateStep", json=kwargs)
+
+    def discovery_conversations_info(self, *, token: str, channel: str, team: str, **kwargs) -> SlackResponse:
+        """Retrieve information about a conversation.
+        Args:
+        channel (str): The channel id. e.g. 'C1234567890'
+        """
+        kwargs.update({"token": token, "channel": channel, "team": team})
+        return self.api_call("discovery.conversations.info", http_verb="GET", params=kwargs)
+
+    def discovery_enterprise_info(self, *, token: str, **kwargs) -> SlackResponse:
+        """Retrieve information about a conversation.
+        Args:
+        channel (str): The channel id. e.g. 'C1234567890'
+        """
+        kwargs.update({"token": token})
+        return self.api_call("discovery.enterprise.info", http_verb="GET", params=kwargs)
