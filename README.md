@@ -4,7 +4,7 @@ To get this app to work follow the instructions below:
 
 1. Ensure you have > Python 3.6
 2. `pip install -r requirements.txt`
-3. export your enterprise token, channel ID, and team ID as follows: (Note you will need to have an org wide level token to be able to access the discovery APIs)
+3. export your enterprise token, and userID as follows: (Note you will need to have an org wide level token to be able to access the discovery APIs). 
 
 ```
 export ENTERPRISE_TOKEN='xoxb-22**************************'
