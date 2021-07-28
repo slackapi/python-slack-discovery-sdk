@@ -2377,9 +2377,35 @@ class WebClient(BaseClient):
         return self.api_call("discovery.conversations.info", http_verb="GET", params=kwargs)
 
     def discovery_enterprise_info(self, *, token: str, **kwargs) -> SlackResponse:
-        """Retrieve information about a conversation.
+        """This method returns basic information about the Entrprise Grid org where the app is installed,
+        including all workspaces (teams). The teams array is paged at 1000 items by default, but this can
+        also be shortened with the limit parameter.
         Args:
-        channel (str): The channel id. e.g. 'C1234567890'
+            token (str): Authentication token bearing Org Owner and Admin scopes
+                e.g. 'xoxp-2275769437943-*****64595c4'
         """
         kwargs.update({"token": token})
         return self.api_call("discovery.enterprise.info", http_verb="GET", params=kwargs)
+    
+    def discovery_users_list(self, *, token: str, **kwargs) -> SlackResponse:
+        """Very similar to regular users.list method. Includes an array of workspace IDs that the user belongs 
+        to on a Grid org (teams). Currently this method does not return names of custom profile fields.
+        Args:
+            token (str): Authentication token bearing Org Owner and Admin scopes
+                e.g. 'xoxp-2275769437943-*****64595c4'
+        """
+        kwargs.update({"token": token})
+        return self.api_call("discovery.users.list", http_verb="GET", params=kwargs)
+
+    def discovery_user_conversations(self, *, token: str, user: str, **kwargs) -> SlackResponse:
+        """This method lists IDs for all conversations (channels and DMs, including public, private,
+            org-wide, and shared) a user is in. With the optional include_historical argument, it will
+            also return any conversation this user was in at some point and left.
+        Args:
+            token (str): xoxp token authorized with discovery:read scope
+                e.g. 'xoxp-2275769437943-*****64595c4'
+            user (str): Encoded user ID for the user whose channels you want to retrieve
+                e.g. 'W0MLS084A'
+        """
+        kwargs.update({"token": token, "user": user})
+        return self.api_call("discovery.user.conversations", http_verb="GET", params=kwargs)
