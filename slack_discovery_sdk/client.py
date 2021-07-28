@@ -2397,6 +2397,17 @@ class WebClient(BaseClient):
         kwargs.update({"token": token})
         return self.api_call("discovery.users.list", http_verb="GET", params=kwargs)
 
+    def discovery_user_info(self, *, token: str, email: str, **kwargs) -> SlackResponse:
+        """Get information on a single user in an Enterprise. The processes for getting info about internal 
+        and external users are slightly different. For internal users you must user either 
+        userID or email to search for a particular user.
+        Args:
+            token (str): Authentication token bearing discovery:read scope
+                e.g. 'xoxp-2275769437943-*****64595c4'
+        """
+        kwargs.update({"token": token, "email":email})
+        return self.api_call("discovery.user.info", http_verb="GET", params=kwargs)
+
     def discovery_user_conversations(self, *, token: str, user: str, **kwargs) -> SlackResponse:
         """This method lists IDs for all conversations (channels and DMs, including public, private,
             org-wide, and shared) a user is in. With the optional include_historical argument, it will
@@ -2409,3 +2420,15 @@ class WebClient(BaseClient):
         """
         kwargs.update({"token": token, "user": user})
         return self.api_call("discovery.user.conversations", http_verb="GET", params=kwargs)
+
+    def discovery_conversations_recent(self, *, token: str, **kwargs) -> SlackResponse:
+        """By default this method will return all updated conversations (including org-shared and 
+        externally-shared conversations) from the entire Grid org for the 24 hours preceding the call.
+        Args:
+            token (str): xoxp token authorized with discovery:read scope
+                e.g. 'xoxp-2275769437943-*****64595c4'
+            team (str): When team is specified, we will return only conversations from that workspace.
+                e.g. 'T1234567890'
+        """
+        kwargs.update({"token": token})
+        return self.api_call("discovery.conversations.recent", http_verb="GET", params=kwargs)
