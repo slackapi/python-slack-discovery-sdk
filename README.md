@@ -4,12 +4,11 @@ To get this app to work follow the instructions below:
 
 1. Ensure you have > Python 3.6
 2. `pip install -r requirements.txt`
-3. export your bot token, channel ID, and team ID as follows
+3. export your enterprise token, channel ID, and team ID as follows: (Note you will need to have an org wide level token to be able to access the discovery APIs)
 
 ```
-export SLACK_BOT_TOKEN='xoxb-22**************************'
-export CHANNEL_ID='C027EHGFC'
-export TEAM_ID='T02112BBD2R'
+export ENTERPRISE_TOKEN='xoxb-22**************************'
+export USER_ID='U028JEZZCKU'
 ```
 
 4. Run the app: `python3 app.py`
@@ -17,5 +16,5 @@ export TEAM_ID='T02112BBD2R'
 5. You should see a response like the following:
 
 ```python
-{'ok': True, 'channel': {'id': 'C027EHGFC', 'name': 'random', 'is_channel': True, 'is_group': False, 'is_im': False, 'created': 1625594757, 'is_archived': False, 'is_general': False, 'unlinked': 0, 'name_normalized': 'random', 'is_shared': False, 'parent_conversation': None, 'creator': '********', 'is_ext_shared': False, 'is_org_shared': False, 'shared_team_ids': ['T234*311'], 'pending_shared': [], 'pending_connected_team_ids': [], 'is_pending_ext_shared': False, 'is_member': False, 'is_private': False, 'is_mpim': False, 'topic': {'value': '', 'creator': '', 'last_set': 0}, 'purpose': {'value': 'This channel is for... well, everything else. It’s a place for team jokes, spur-of-the-moment ideas, and funny GIFs. Go wild!', 'creator': '******', 'last_set': 1625594757}, 'previous_names': []}}
+{'ok': True, 'channels': [{'id': 'D028****MK0W', 'team_id': 'E****NMCVTR', 'date_joined': 1626724524, 'date_left': 0, 'is_private': True, 'is_im': True, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C028BN****D4', 'team_id': 'T028QM7****U', 'date_joined': 1626724525, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'D0****EKV', 'team_id': 'E0283NMCVTR', 'date_joined': 1626724524, 'date_left': 0, 'is_private': True, 'is_im': True, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C028R2**TY', 'team_id': 'T02****U', 'date_joined': 1626983537, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C0298**TTJ', 'team_id': 'T028QM79BGU', 'date_joined': 1626724525, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C029****PEF2', 'team_id': 'T028Q****BGU', 'date_joined': 1626896861, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': True}]}
 ```
