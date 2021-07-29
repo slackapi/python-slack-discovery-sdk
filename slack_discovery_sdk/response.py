@@ -1,16 +1,16 @@
 """A Python module for interacting and consuming responses from Slack."""
 
 import logging
-from typing import Union
+from typing import Optional
 
 import slack_sdk.errors as e
 from .internal_utils import _next_cursor_is_present
 
 
-class SlackResponse:
+class DiscoveryResponse:
     """An iterable container of response data.
     Attributes:
-        data (dict): The json-encoded content of the response. Along
+        body (dict): The json-encoded content of the response. Along
             with the headers and status code information.
     Methods:
         validate: Check if the response from Slack was successful.
@@ -20,14 +20,10 @@ class SlackResponse:
     Example:
     ```python
     import os
-    import slack
-    client = slack.WebClient(token=os.environ['SLACK_API_TOKEN'])
-    response1 = client.auth_revoke(test='true')
-    assert not response1['revoked']
-    response2 = client.auth_test()
-    assert response2.get('ok', False)
+    from slack_discovery_sdk import DiscoveryClient
+    client = DiscoveryClient(token=os.environ['SLACK_ORG_ADMIN_TOKEN'])
     users = []
-    for page in client.users_list(limit=2):
+    for page in client.discovery_users_list():
         users = users + page['members']
     ```
     Note:
@@ -45,32 +41,36 @@ class SlackResponse:
     def __init__(
         self,
         *,
-        client,
+        client: "BaseDiscoveryClient",
         http_verb: str,
         api_url: str,
-        req_args: dict,
-        data: Union[dict, bytes],  # data can be binary data
+        request_headers: dict,
+        request_params: Optional[dict],
+        raw_body: str,
+        body: dict,
         headers: dict,
         status_code: int,
     ):
         self.http_verb = http_verb
         self.api_url = api_url
-        self.req_args = req_args
-        self.data = data
+        self.request_headers = request_headers
+        self.request_params = request_params
+        self.raw_body = raw_body
+        self.body = body
         self.headers = headers
         self.status_code = status_code
-        self._initial_data = data
+        self._initial_data = body
         self._iteration = None  # for __iter__ & __next__
         self._client = client
         self._logger = logging.getLogger(__name__)
 
     def __str__(self):
         """Return the Response data if object is converted to a string."""
-        if isinstance(self.data, bytes):
+        if isinstance(self.body, bytes):
             raise ValueError(
                 "As the response.data is binary data, this operation is unsupported"
             )
-        return f"{self.data}"
+        return f"{self.body}"
 
     def __getitem__(self, key):
         """Retrieves any key from the data store.
@@ -81,11 +81,11 @@ class SlackResponse:
         Returns:
             The value from data or None.
         """
-        if isinstance(self.data, bytes):
+        if isinstance(self.body, bytes):
             raise ValueError(
                 "As the response.data is binary data, this operation is unsupported"
             )
-        return self.data.get(key, None)
+        return self.body.get(key, None)
 
     def __iter__(self):
         """Enables the ability to iterate over the response.
@@ -96,7 +96,7 @@ class SlackResponse:
             (SlackResponse) self
         """
         self._iteration = 0
-        self.data = self._initial_data
+        self.body = self._initial_data
         return self
 
     def __next__(self):
@@ -115,28 +115,28 @@ class SlackResponse:
             SlackApiError: If the request to the Slack API failed.
             StopIteration: If 'next_cursor' is not present or empty.
         """
-        if isinstance(self.data, bytes):
+        if isinstance(self.body, bytes):
             raise ValueError(
                 "As the response.data is binary data, this operation is unsupported"
             )
         self._iteration += 1
         if self._iteration == 1:
             return self
-        if _next_cursor_is_present(self.data):  # skipcq: PYL-R1705
-            params = self.req_args.get("params", {})
-            if params is None:
-                params = {}
-            next_cursor = self.data.get("response_metadata", {}).get(
-                "next_cursor"
-            ) or self.data.get("next_cursor")
+        if _next_cursor_is_present(self.body):  # skipcq: PYL-R1705
+            params = self.request_params or {}
+            # cursor
+            next_cursor = self.body.get("response_metadata", {}).get("next_cursor")
             params.update({"cursor": next_cursor})
-            self.req_args.update({"params": params})
+            # offset for https://api.slack.com/enterprise/discovery/methods#users_list
+            params.update({"offset": self.body.get("offset")})
 
             # This method sends a request in a synchronous way
-            response = self._client._request_for_pagination(  # skipcq: PYL-W0212
-                api_url=self.api_url, req_args=self.req_args
+            response = self._client.fetch_next_page(  # skipcq: PYL-W0212
+                api_url=self.api_url,
+                headers=self.request_headers,
+                params=params,
             )
-            self.data = response["data"]
+            self.body = response["data"]
             self.headers = response["headers"]
             self.status_code = response["status_code"]
             return self.validate()
@@ -152,11 +152,7 @@ class SlackResponse:
         Returns:
             The value from data or the specified default.
         """
-        if isinstance(self.data, bytes):
-            raise ValueError(
-                "As the response.data is binary data, this operation is unsupported"
-            )
-        return self.data.get(key, default)
+        return self.body.get(key, default)
 
     def validate(self):
         """Check if the response from Slack was successful.
@@ -167,17 +163,16 @@ class SlackResponse:
             SlackApiError: The request to the Slack API failed.
         """
         if self._logger.level <= logging.DEBUG:
-            body = self.data if isinstance(self.data, dict) else "(binary)"
             self._logger.debug(
                 "Received the following response - "
                 f"status: {self.status_code}, "
                 f"headers: {dict(self.headers)}, "
-                f"body: {body}"
+                f"body: {self.body}"
             )
         if (
             self.status_code == 200
-            and self.data
-            and (isinstance(self.data, bytes) or self.data.get("ok", False))
+            and self.body is not None
+            and self.body.get("ok", False)
         ):
             return self
         msg = "The request to the Slack API failed."
