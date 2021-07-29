@@ -12,8 +12,7 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen, OpenerDirector, ProxyHandler, HTTPSHandler
 
-import slack_sdk.errors as err
-from slack_sdk.errors import SlackRequestError
+from slack_discovery_sdk.errors import SlackRequestError, SlackApiError
 from .internal_utils import (
     convert_bool_to_0_or_1,
     get_user_agent,
@@ -109,7 +108,9 @@ class BaseDiscoveryClient:
         token = self.token
         params = params or {}
         if "token" in params:
-            token = params.pop("token")
+            param_token = params.pop("token")
+            if param_token is not None:
+                token = param_token
         return self._urllib_api_call(
             token=token,
             url=api_url,
@@ -134,7 +135,7 @@ class BaseDiscoveryClient:
         return {
             "status_code": int(response["status"]),
             "headers": dict(response["headers"]),
-            "data": json.loads(response["body"]),
+            "body": json.loads(response["body"]),
         }
 
     def _urllib_api_call(
@@ -187,14 +188,14 @@ class BaseDiscoveryClient:
             headers=request_headers,
             params=params,
         )
-        raw_body = response.get("body", "")  # skipcq: PTC-W0039
+        raw_body = response.get("body", "")
         parsed_body: Optional[dict] = None
         if len(raw_body) > 0:
             try:
-                parsed_body = json.loads(response["body"])
+                parsed_body = json.loads(raw_body)
             except json.decoder.JSONDecodeError:
-                message = _build_unexpected_body_error_message(response.get("body", ""))
-                raise err.SlackApiError(message, response)
+                message = _build_unexpected_body_error_message(raw_body)
+                raise SlackApiError(message, response)
 
         return DiscoveryResponse(
             client=self,

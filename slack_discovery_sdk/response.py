@@ -3,7 +3,7 @@
 import logging
 from typing import Optional
 
-import slack_sdk.errors as e
+import slack_discovery_sdk.errors as e
 from .internal_utils import _next_cursor_is_present
 
 
@@ -66,10 +66,6 @@ class DiscoveryResponse:
 
     def __str__(self):
         """Return the Response data if object is converted to a string."""
-        if isinstance(self.body, bytes):
-            raise ValueError(
-                "As the response.data is binary data, this operation is unsupported"
-            )
         return f"{self.body}"
 
     def __getitem__(self, key):
@@ -81,10 +77,6 @@ class DiscoveryResponse:
         Returns:
             The value from data or None.
         """
-        if isinstance(self.body, bytes):
-            raise ValueError(
-                "As the response.data is binary data, this operation is unsupported"
-            )
         return self.body.get(key, None)
 
     def __iter__(self):
@@ -115,10 +107,6 @@ class DiscoveryResponse:
             SlackApiError: If the request to the Slack API failed.
             StopIteration: If 'next_cursor' is not present or empty.
         """
-        if isinstance(self.body, bytes):
-            raise ValueError(
-                "As the response.data is binary data, this operation is unsupported"
-            )
         self._iteration += 1
         if self._iteration == 1:
             return self
@@ -127,18 +115,17 @@ class DiscoveryResponse:
             # cursor
             next_cursor = self.body.get("response_metadata", {}).get("next_cursor")
             params.update({"cursor": next_cursor})
-            # offset for https://api.slack.com/enterprise/discovery/methods#users_list
+            # offset for https://api.slack.com/enterprise/discovery/methods#users_list etc.
             params.update({"offset": self.body.get("offset")})
 
-            # This method sends a request in a synchronous way
             response = self._client.fetch_next_page(  # skipcq: PYL-W0212
                 api_url=self.api_url,
                 headers=self.request_headers,
                 params=params,
             )
-            self.body = response["data"]
-            self.headers = response["headers"]
             self.status_code = response["status_code"]
+            self.headers = response["headers"]
+            self.body = response["body"]
             return self.validate()
         else:
             raise StopIteration

@@ -5,7 +5,7 @@ from .base_client import BaseDiscoveryClient, DiscoveryResponse
 
 
 class DiscoveryClient(BaseDiscoveryClient):
-    """A WebClient allows apps to communicate with the Slack Platform's Discovery APIs.
+    """A DiscoveryClient allows apps to communicate with the Slack Platform's Discovery APIs.
     https://api.slack.com/enterprise/discovery/methods
     The Slack Web API is an interface for querying information from
     and enacting change in a Slack workspace.
@@ -20,33 +20,6 @@ class DiscoveryClient(BaseDiscoveryClient):
             Default is 30 seconds.
     Methods:
         api_call: Constructs a request and executes the API call to Slack.
-    Example of recommended usage:
-    ```python
-        import os
-        from slack_sdk import WebClient
-        client = WebClient(token=os.environ['SLACK_API_TOKEN'])
-        response = client.chat_postMessage(
-            channel='#random',
-            text="Hello world!")
-        assert response["ok"]
-        assert response["message"]["text"] == "Hello world!"
-    ```
-    Example manually creating an API request:
-    ```python
-        import os
-        from slack_sdk import WebClient
-        client = WebClient(token=os.environ['SLACK_API_TOKEN'])
-        response = client.api_call(
-            api_method='chat.postMessage',
-            json={'channel': '#random','text': "Hello world!"}
-        )
-        assert response["ok"]
-        assert response["message"]["text"] == "Hello world!"
-    ```
-    Note:
-        Any attributes or methods prefixed with _underscores are
-        intended to be "private" internal use only. They may be changed or
-        removed at anytime.
     """
 
     def auth_test(self, **kwargs) -> DiscoveryResponse:
