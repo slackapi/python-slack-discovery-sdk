@@ -12,9 +12,10 @@ with open(f"{here}/README.md", "r") as fh:
     long_description = fh.read()
 
 test_dependencies = [
+    "slack_sdk>=3.8.0,<4",
     "pytest>=5,<6",
     "pytest-cov>=2,<3",
-    "black==21.5b1",
+    "black==21.7b0",
 ]
 
 setuptools.setup(
@@ -32,9 +33,7 @@ setuptools.setup(
         ]
     ),
     include_package_data=True,  # MANIFEST.in
-    install_requires=[
-        "slack_sdk>=3.8.0,<4",
-    ],
+    install_requires=[],
     setup_requires=["pytest-runner==5.2"],
     tests_require=test_dependencies,
     test_suite="tests",

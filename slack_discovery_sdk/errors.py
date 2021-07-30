@@ -1,27 +1,27 @@
 """Errors that can be raised by this SDK"""
 
 
-class SlackClientError(Exception):
+class DiscoveryClientError(Exception):
     """Base class for Client errors"""
 
 
-class SlackRequestError(SlackClientError):
+class DiscoveryRequestError(DiscoveryClientError):
     """Error raised when there's a problem with the request that's being submitted."""
 
 
-class SlackApiError(SlackClientError):
+class DiscoveryApiError(DiscoveryClientError):
     """Error raised when Slack does not send the expected response.
 
     Attributes:
-        response (SlackResponse): The SlackResponse object containing all of the data sent back from the API.
+        response (DiscoveryResponse): The SlackResponse object containing all of the data sent back from the API.
 
     Note:
         The message (str) passed into the exception is used when
         a user converts the exception to a str.
-        i.e. str(SlackApiError("This text will be sent as a string."))
+        i.e. str(DiscoveryApiError("This text will be sent as a string."))
     """
 
     def __init__(self, message, response):
         msg = f"{message}\nThe server responded with: {response}"
         self.response = response
-        super(SlackApiError, self).__init__(msg)
+        super(DiscoveryApiError, self).__init__(msg)
