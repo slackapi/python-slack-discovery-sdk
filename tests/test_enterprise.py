@@ -1,12 +1,11 @@
-import logging
 import os
 from slack_discovery_sdk import DiscoveryClient
+from tests.env_variable_names import SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN
 
 
 class TestEnterprise:
     def setup_method(self):
-        logging.basicConfig(level=logging.DEBUG)
-        self.token = os.environ["SLACK_ENTERPRISE_TOKEN"]
+        self.token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
         self.client = DiscoveryClient(token=self.token)
 
     def test_enterprise_info(self):

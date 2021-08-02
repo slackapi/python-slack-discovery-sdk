@@ -12,7 +12,7 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen, OpenerDirector, ProxyHandler, HTTPSHandler
 
-from slack_discovery_sdk.errors import SlackRequestError, SlackApiError
+from slack_discovery_sdk.errors import DiscoveryRequestError, DiscoveryApiError
 from .internal_utils import (
     convert_bool_to_0_or_1,
     get_user_agent,
@@ -20,11 +20,11 @@ from .internal_utils import (
     _build_unexpected_body_error_message,
 )
 from .response import DiscoveryResponse
-from .proxy_env_variable_loader import load_http_proxy_from_env
+from .proxy_support import load_http_proxy_from_env
 
 
 class BaseDiscoveryClient:
-    BASE_URL = "https://www.slack.com/api/"
+    BASE_URL = "https://slack.com/api/"
 
     def __init__(
         self,
@@ -63,6 +63,7 @@ class BaseDiscoveryClient:
         self,
         api_method: str,
         *,
+        http_method: str = "POST",
         params: Optional[dict] = None,
         headers: Optional[dict] = None,
         auth: Optional[dict] = None,
@@ -71,12 +72,14 @@ class BaseDiscoveryClient:
         Args:
             api_method (str): The target Slack API method.
                 e.g. 'discovery.enterprise.info'
+            http_method (str): The HTTP method
+                e.g. POST, GET
             params (dict): The URL parameters to append to the URL.
                 e.g. {'key1': 'value1', 'key2': 'value2'}
             headers (dict): Additional request headers
             auth (dict): A dictionary that consists of client_id and client_secret
         Returns:
-            (SlackResponse)
+            (DiscoveryResponse)
                 The server's response to an HTTP request. Data
                 from the response can be accessed like a dict.
                 If the response included 'next_cursor' it can
@@ -90,7 +93,7 @@ class BaseDiscoveryClient:
         headers = headers or {}
         headers.update(self.headers)
 
-        # Basic Auth for oauth.v2.access / oauth.access
+        # Basic Auth for oauth.v2.access
         if auth is not None:
             if isinstance(auth, str):
                 headers["Authorization"] = auth
@@ -113,6 +116,7 @@ class BaseDiscoveryClient:
                 token = param_token
         return self._urllib_api_call(
             token=token,
+            http_method=http_method,
             url=api_url,
             params=params or {},
             additional_headers=headers or {},
@@ -120,17 +124,21 @@ class BaseDiscoveryClient:
 
     def fetch_next_page(
         self,
+        http_method: str,
         api_url: str,
         headers: Dict[str, str],
         params: Dict[str, str],
     ) -> Dict[str, any]:
-        """This method is supposed to be used only for SlackResponse pagination
+        """This method is supposed to be used only for DiscoveryResponse pagination
         You can paginate using Python's for iterator as below:
           for response in client.conversations_list(limit=100):
               # do something with each response here
         """
         response = self._perform_urllib_http_request(
-            url=api_url, headers=headers or {}, params=params or {}
+            http_method=http_method,
+            url=api_url,
+            headers=headers or {},
+            params=params or {},
         )
         return {
             "status_code": int(response["status"]),
@@ -142,6 +150,7 @@ class BaseDiscoveryClient:
         self,
         *,
         token: Optional[str] = None,
+        http_method: str,
         url: str,
         params: Dict[str, str],
         additional_headers: Dict[str, str],
@@ -149,7 +158,7 @@ class BaseDiscoveryClient:
         """Performs a Slack API request and returns the result.
         Args:
             token: Slack API Token (either bot token or user token)
-            url: Complete URL (e.g., https://www.slack.com/api/discovery.enterprise.info)
+            url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
             params: Form body params
             additional_headers: Request headers to append
         Returns:
@@ -174,7 +183,7 @@ class BaseDiscoveryClient:
                 for k, v in additional_headers.items()
             }
             self._logger.debug(
-                f"Sending a request - url: {url}, "
+                f"Sending a request - {http_method} {url}, "
                 f"params: {convert_params(params)}, "
                 f"headers: {headers}"
             )
@@ -184,6 +193,7 @@ class BaseDiscoveryClient:
             additional_headers=additional_headers,
         )
         response = self._perform_urllib_http_request(
+            http_method=http_method,
             url=url,
             headers=request_headers,
             params=params,
@@ -195,11 +205,11 @@ class BaseDiscoveryClient:
                 parsed_body = json.loads(raw_body)
             except json.decoder.JSONDecodeError:
                 message = _build_unexpected_body_error_message(raw_body)
-                raise SlackApiError(message, response)
+                raise DiscoveryApiError(message, response)
 
         return DiscoveryResponse(
             client=self,
-            http_verb="POST",
+            http_method=http_method,
             api_url=url,
             request_headers=request_headers,
             request_params=params,
@@ -212,20 +222,21 @@ class BaseDiscoveryClient:
     def _perform_urllib_http_request(
         self,
         *,
+        http_method: str = "POST",
         url: str,
         headers: Dict[str, str],
         params: Dict[str, str],
     ) -> Dict[str, any]:
         """Performs an HTTP request and parses the response.
         Args:
-            url: Complete URL (e.g., https://www.slack.com/api/discovery.enterprise.info)
+            url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
             args: args has "headers" and "params"
                 "headers": Dict[str, str]
                 "params": Dict[str, str],
         Returns:
             dict {status: int, headers: Headers, body: str}
         """
-        body = urlencode(params or {}).encode("utf-8")
+        url_encoded_params: str = urlencode(params or {})
         headers["Content-Type"] = "application/x-www-form-urlencoded"
 
         # NOTE: Intentionally ignore the `http_verb` here
@@ -236,7 +247,25 @@ class BaseDiscoveryClient:
             # which might be a security risk if the URL to open can be manipulated by an external user.
             # (BAN-B310)
             if url.lower().startswith("http"):
-                req = Request(method="POST", url=url, data=body, headers=headers)
+                if http_method == "POST":
+                    req = Request(
+                        method="POST",
+                        url=url,
+                        data=url_encoded_params.encode("utf-8"),
+                        headers=headers,
+                    )
+                elif http_method == "GET":
+                    url = (
+                        f"{url}&{url_encoded_params}"
+                        if "?" in url
+                        else f"{url}?{url_encoded_params}"
+                    )
+                    req = Request(method="GET", url=url, headers=headers)
+                else:
+                    raise DiscoveryRequestError(
+                        f"Unsupported HTTP method: {http_method}"
+                    )
+
                 opener: Optional[OpenerDirector] = None
                 if self.proxy is not None:
                     if isinstance(self.proxy, str):
@@ -245,7 +274,7 @@ class BaseDiscoveryClient:
                             HTTPSHandler(context=self.ssl),
                         )
                     else:
-                        raise SlackRequestError(
+                        raise DiscoveryRequestError(
                             f"Invalid proxy detected: {self.proxy} must be a str value"
                         )
 
@@ -259,9 +288,15 @@ class BaseDiscoveryClient:
                     )
 
                 charset = resp.headers.get_content_charset() or "utf-8"
-                body: str = resp.read().decode(charset)  # read the response body here
-                return {"status": resp.code, "headers": resp.headers, "body": body}
-            raise SlackRequestError(f"Invalid URL detected: {url}")
+                url_encoded_params: str = resp.read().decode(
+                    charset
+                )  # read the response body here
+                return {
+                    "status": resp.code,
+                    "headers": resp.headers,
+                    "body": url_encoded_params,
+                }
+            raise DiscoveryRequestError(f"Invalid URL detected: {url}")
         except HTTPError as e:
             resp = {"status": e.code, "headers": e.headers}
             if e.code == 429:
@@ -270,8 +305,8 @@ class BaseDiscoveryClient:
 
             # read the response body here
             charset = e.headers.get_content_charset() or "utf-8"
-            body: str = e.read().decode(charset)
-            resp["body"] = body
+            url_encoded_params: str = e.read().decode(charset)
+            resp["body"] = url_encoded_params
             return resp
 
         except Exception as err:

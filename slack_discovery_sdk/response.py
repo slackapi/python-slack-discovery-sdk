@@ -42,7 +42,7 @@ class DiscoveryResponse:
         self,
         *,
         client: "BaseDiscoveryClient",
-        http_verb: str,
+        http_method: str,
         api_url: str,
         request_headers: dict,
         request_params: Optional[dict],
@@ -51,7 +51,7 @@ class DiscoveryResponse:
         headers: dict,
         status_code: int,
     ):
-        self.http_verb = http_verb
+        self.http_method = http_method
         self.api_url = api_url
         self.request_headers = request_headers
         self.request_params = request_params
@@ -119,6 +119,7 @@ class DiscoveryResponse:
             params.update({"offset": self.body.get("offset")})
 
             response = self._client.fetch_next_page(  # skipcq: PYL-W0212
+                http_method=self.http_method,
                 api_url=self.api_url,
                 headers=self.request_headers,
                 params=params,
@@ -163,4 +164,4 @@ class DiscoveryResponse:
         ):
             return self
         msg = "The request to the Slack API failed."
-        raise e.SlackApiError(message=msg, response=self)
+        raise e.DiscoveryApiError(message=msg, response=self)

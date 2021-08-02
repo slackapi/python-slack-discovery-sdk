@@ -28,7 +28,7 @@ def get_user_agent(prefix: Optional[str] = None, suffix: Optional[str] = None):
     Python version and OS version.
     Returns:
         The user agent string.
-        e.g. 'Python/3.6.7 slackclient/2.0.0 Darwin/17.7.0'
+        e.g. 'Python/3.6.7 slack_discovery_sdk/1.0.0 Darwin/17.7.0'
     """
     # __name__ returns all classes, we only want the client
     client = "{0}/{1}".format("slack_discovery_sdk", version.__version__)
@@ -44,10 +44,10 @@ def _get_url(base_url: str, api_method: str) -> str:
     """Joins the base Slack URL and an API method to form an absolute URL.
     Args:
         base_url (str): The base URL
-        api_method (str): The Slack Web API method. e.g. 'chat.postMessage'
+        api_method (str): The Slack Web API method. e.g. 'discovery.chat.delete'
     Returns:
         The absolute API URL.
-            e.g. 'https://www.slack.com/api/chat.postMessage'
+            e.g. 'https://slack.com/api/discovery.chat.delete'
     """
     return urljoin(base_url, api_method)
 

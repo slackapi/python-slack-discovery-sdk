@@ -34,7 +34,12 @@ class DiscoveryOAuthApp:
             def do_GET(self):
                 request_path, _, query = self.path.partition("?")
                 if request_path == _install_path:
-                    url = f"https://slack.com/oauth/v2/authorize?client_id={_client_id}&scope={_bot_scopes}&user_scope={_user_scopes}"
+                    url = (
+                        f"https://slack.com/oauth/v2/authorize"
+                        f"?client_id={_client_id}"
+                        f"&scope={_bot_scopes}"
+                        f"&user_scope={_user_scopes}"
+                    )
                     self._send_response(302, body="", headers={"Location": [url]})
                 elif request_path == _redirect_path:
                     try:
@@ -68,7 +73,16 @@ class DiscoveryOAuthApp:
                     self._send_response(404, headers={})
 
             def _build_html_page(self, main: str) -> str:
-                return f"""<html><head><style>body {{ padding: 10px 15px; font-family: verdana; text-align: center; }}</style></head><body>{main}</body></html>"""
+                return (
+                    "<html>"
+                    "<head>"
+                    "<style>body {{ padding: 10px 15px; font-family: verdana; text-align: center; }}</style>"
+                    "</head>"
+                    "<body>"
+                    f"{main}"
+                    "</body>"
+                    "</html>"
+                )
 
             def _send_response(
                 self,
