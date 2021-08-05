@@ -3,7 +3,6 @@ from typing import Optional
 
 from .base_client import BaseDiscoveryClient, DiscoveryResponse
 
-
 class DiscoveryClient(BaseDiscoveryClient):
     """A DiscoveryClient allows apps to communicate with the Slack Platform's Discovery APIs.
     https://api.slack.com/enterprise/discovery/methods
@@ -59,12 +58,13 @@ class DiscoveryClient(BaseDiscoveryClient):
         ts: str,
         channel: str,
         team: Optional[str] = None,
-        content: str,
+        content: Optional[str] = None,
         **kwargs
     ) -> DiscoveryResponse:
         """Use this method to update and or obscure a message in the event that the message violated policy.
         Refer to https://api.slack.com/enterprise/discovery/methods#chat_tombstone for more details.
         """
+   
         kwargs.update(
             {
                 "token": token,
@@ -83,80 +83,115 @@ class DiscoveryClient(BaseDiscoveryClient):
     # ------------------------------------------------
 
     def discovery_enterprise_info(
-        self, *, token: Optional[str] = None, **kwargs
+        self,
+        *,
+        token: Optional[str] = None,
+        cursor: Optional[str] = None,
+        limit: Optional[int] = None,
+        include_deleted: Optional[bool] = None,
+        **kwargs
     ) -> DiscoveryResponse:
         """This method returns basic information about the Enterprise Grid org
         where the app is installed, including all workspaces (teams).
         The teams array is paged at 1000 items by default, but this can also be shortened with the limit parameter.
         Refer to https://api.slack.com/enterprise/discovery/methods#enterprise_info for more details.
         """
-        kwargs.update({"token": token})
+        kwargs.update(
+            {
+                "token": token,
+                "curosr": cursor,
+                "limit": limit,
+                "include_deleted": include_deleted
+            }
+        )
         return self.api_call(
             "discovery.enterprise.info", http_method="GET", params=kwargs
         )
 
-    # ------------------------------------------------
-    # discovery.conversations
-    # ------------------------------------------------
-
-    def discovery_conversations_info(
-        self, *, token: Optional[str] = None, channel: str, team: str, **kwargs
-    ) -> DiscoveryResponse:
-        """This method provides a comprehensive overview of a single channel outside of its message history.
-        Refer to https://api.slack.com/enterprise/discovery/methods#conversations_info for more details.
-        """
-        kwargs.update({"token": token, "channel": channel, "team": team})
-        return self.api_call(
-            "discovery.conversations.info", http_method="GET", params=kwargs
-        )
-
-    def discovery_conversations_recent(
-        self, *, token: Optional[str] = None, **kwargs
-    ) -> DiscoveryResponse:
-        """By default this method will return all updated conversations
-        (including org-shared and externally-shared conversations)
-        from the entire Grid org for the 24 hours preceding the call.
-        You can restrict it to a specific workspace within an org, a smaller timespan,
-        or to return data for the last 7 days by using the optional parameters.
-        Refer to https://api.slack.com/enterprise/discovery/methods#conversations_recent for more details.
-        """
-        kwargs.update({"token": token})
-        return self.api_call(
-            "discovery.conversations.recent", http_method="GET", params=kwargs
-        )
-
+    
     # ------------------------------------------------
     # discovery.users
     # ------------------------------------------------
 
     def discovery_users_list(
-        self, *, token: Optional[str] = None, **kwargs
+        self,
+        *,
+        token: Optional[str] = None,
+        limit: Optional[int] = None,
+        include_deleted: Optional[bool] = None,
+        offset: Optional[str] = None,
+        **kwargs
     ) -> DiscoveryResponse:
         """Very similar to regular users.list method. Includes an array of workspace IDs
         that the user belongs to on a Grid org (teams).
         Refer to https://api.slack.com/enterprise/discovery/methods#users_list for more details.
         """
-        kwargs.update({"token": token})
-        return self.api_call("discovery.users.list", http_method="GET", params=kwargs)
+        kwargs.update(
+            {
+                "token": token,
+                "limit": limit,
+                "include_deleted": include_deleted,
+                "offset": offset
+            }
+        )
+        return self.api_call(
+            "discovery.users.list", http_method="GET", params=kwargs
+        )
 
     def discovery_user_info(
-        self, *, token: Optional[str] = None, email: str, **kwargs
+        self,
+        *,
+        token: Optional[str] = None,
+        user: Optional[str] = None,
+        email: Optional[str] = None,
+        **kwargs
     ) -> DiscoveryResponse:
         """Get information on a single user in an Enterprise.
         The processes for getting info about internal and external users are slightly different.
         Refer to https://api.slack.com/enterprise/discovery/methods#user_info for more details.
         """
-        kwargs.update({"token": token, "email": email})
+        kwargs.update(
+            {
+                "token": token,
+                "user": user, 
+                "email": email
+            }
+        )
         return self.api_call("discovery.user.info", http_method="GET", params=kwargs)
 
     def discovery_user_conversations(
-        self, *, token: Optional[str] = None, user: str, **kwargs
+        self, 
+        *,
+        token: Optional[str] = None, 
+        user: str, 
+        offset: Optional[str] = None, 
+        include_historical: Optional[bool] = None, 
+        only_im: Optional[bool] = None, 
+        only_mpim: Optional[bool] = None, 
+        only_private: Optional[bool] = None, 
+        only_public: Optional[bool] = None, 
+        limit: Optional[int] = None, 
+        **kwargs
     ) -> DiscoveryResponse:
         """This method lists IDs for all conversations (channels and DMs, including public, private,
         org-wide, and shared) a user is in.
         Refer to https://api.slack.com/enterprise/discovery/methods#user_conversations for more details.
         """
-        kwargs.update({"token": token, "user": user})
+        kwargs.update(
+            {
+                "token": token, 
+                "user": user,
+                "include_historical": include_historical,
+                "only_im": only_im,
+                "only_mpim": only_mpim,
+                "only_private": only_private,
+                "only_public": only_public,
+                "limit": limit
+            }
+        )
+        if offset != None:
+            kwargs.update({"offset":offset})
+        
         return self.api_call(
             "discovery.user.conversations", http_method="GET", params=kwargs
         )
