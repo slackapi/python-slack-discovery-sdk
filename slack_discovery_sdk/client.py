@@ -179,7 +179,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         only_mpim: Optional[bool] = False, 
         only_private: Optional[bool] = False, 
         only_public: Optional[bool] = False, 
-        limit: Optional[int] = 999, 
+        limit: Optional[int] = None, 
         **kwargs
     ) -> DiscoveryResponse:
         """This method lists IDs for all conversations (channels and DMs, including public, private,
