@@ -23,3 +23,8 @@ class TestUsers:
         auth_test = self.client.auth_test()
         response = self.client.discovery_user_conversations(user=auth_test["user_id"])
         assert response["error"] is None
+
+    def test_user_info(self):
+        auth_test = self.client.auth_test()
+        response = self.client.discovery_user_info(user=auth_test["user_id"])
+        assert response["error"] is None
