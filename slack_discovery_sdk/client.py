@@ -79,7 +79,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
 
     # ------------------------------------------------
-    # discovery.enterprise.info
+    # discovery.enterprise
     # ------------------------------------------------
 
     def discovery_enterprise_info(
@@ -88,7 +88,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         token: Optional[str] = None,
         cursor: Optional[str] = None,
         limit: Optional[int] = None,
-        include_deleted: Optional[bool] = False,
+        include_deleted: Optional[bool] = None,
         **kwargs
     ) -> DiscoveryResponse:
         """This method returns basic information about the Enterprise Grid org
@@ -110,7 +110,7 @@ class DiscoveryClient(BaseDiscoveryClient):
 
     
     # ------------------------------------------------
-    # discovery.users.list
+    # discovery.users
     # ------------------------------------------------
 
     def discovery_users_list(
@@ -118,7 +118,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         *,
         token: Optional[str] = None,
         limit: Optional[int] = None,
-        include_deleted: Optional[bool] = False,
+        include_deleted: Optional[bool] = None,
         offset: Optional[str] = None,
         **kwargs
     ) -> DiscoveryResponse:
@@ -137,10 +137,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         return self.api_call(
             "discovery.users.list", http_method="GET", params=kwargs
         )
-
-    # ------------------------------------------------
-    # discovery.user.info
-    # ------------------------------------------------
 
     def discovery_user_info(
         self,
@@ -163,22 +159,17 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
         return self.api_call("discovery.user.info", http_method="GET", params=kwargs)
 
-
-    # ------------------------------------------------
-    # discovery.user.conversations
-    # ------------------------------------------------
-    
     def discovery_user_conversations(
         self, 
         *,
         token: Optional[str] = None, 
         user: str, 
         offset: Optional[str] = None, 
-        include_historical: Optional[bool] = False, 
-        only_im: Optional[bool] = False, 
-        only_mpim: Optional[bool] = False, 
-        only_private: Optional[bool] = False, 
-        only_public: Optional[bool] = False, 
+        include_historical: Optional[bool] = None, 
+        only_im: Optional[bool] = None, 
+        only_mpim: Optional[bool] = None, 
+        only_private: Optional[bool] = None, 
+        only_public: Optional[bool] = None, 
         limit: Optional[int] = None, 
         **kwargs
     ) -> DiscoveryResponse:
