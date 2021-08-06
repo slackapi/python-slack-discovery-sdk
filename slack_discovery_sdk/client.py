@@ -442,8 +442,9 @@ class DiscoveryClient(BaseDiscoveryClient):
         offset: Optional[str] = None, 
         **kwargs
     ) -> DiscoveryResponse:
-        """Use this method to gather detailed information about current message reactions in a channel. 
-        Refer to https://api.slack.com/enterprise/discovery/methods#conversations_reactions for more details.
+        """The discovery.conversations.search endpoint can be used to find channels and messages within an
+        instance that contain the provided search term. 
+        Refer to https://api.slack.com/enterprise/discovery/methods#conversations_search for more details.
         """
         kwargs.update(
             {
@@ -451,9 +452,9 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "team": team,
                 "query": query,
                 "include_messages": include_messages,
+                "limit": limit,
                 "latest": latest,
                 "oldest": oldest,
-                "limit": limit,
                 "offset": offset,
             }
         )
