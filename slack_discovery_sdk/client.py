@@ -48,37 +48,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
 
     # ------------------------------------------------
-    # discovery.chat
-    # ------------------------------------------------
-
-    def discovery_chat_tombstone(
-        self,
-        *,
-        token: Optional[str] = None,
-        ts: str,
-        channel: str,
-        team: Optional[str] = None,
-        content: Optional[str] = None,
-        **kwargs
-    ) -> DiscoveryResponse:
-        """Use this method to update and or obscure a message in the event that the message violated policy.
-        Refer to https://api.slack.com/enterprise/discovery/methods#chat_tombstone for more details.
-        """
-   
-        kwargs.update(
-            {
-                "token": token,
-                "ts": ts,
-                "channel": channel,
-                "team": team,
-                "content": content,
-            }
-        )
-        return self.api_call(
-            "discovery.chat.tombstone", http_method="POST", params=kwargs
-        )
-
-    # ------------------------------------------------
     # discovery.enterprise
     # ------------------------------------------------
 
@@ -460,6 +429,63 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
         return self.api_call(
             "discovery.conversations.search", http_method="GET", params=kwargs
+        )
+
+    # ------------------------------------------------
+    # discovery.chat
+    # ------------------------------------------------
+
+    def discovery_chat_info(
+        self,
+        *,
+        token: Optional[str] = None,
+        ts: str,
+        channel: str,
+        team: str,
+        **kwargs
+    ) -> DiscoveryResponse:
+        """This endpoint returns a single message. If the message has been edited (or deleted), 
+        this method returns the current, edited (or deleted) message. 
+        Refer to https://api.slack.com/enterprise/discovery/methods#chat_info for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "ts": ts,
+                "channel": channel,
+                "team": team,
+            }
+        )
+        return self.api_call(
+            "discovery.chat.info", http_method="POST", params=kwargs
+        )
+
+    def discovery_chat_tombstone(
+        self,
+        *,
+        token: Optional[str] = None,
+        ts: str,
+        channel: str,
+        team: Optional[str] = None,
+        content: Optional[str] = None,
+        **kwargs
+    ) -> DiscoveryResponse:
+        """Use this method to update and or obscure a message in the event that the message violated policy.
+        Refer to https://api.slack.com/enterprise/discovery/methods#chat_tombstone for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "ts": ts,
+                "channel": channel,
+                "team": team,
+                "content": content,
+            }
+        )
+        return self.api_call(
+            "discovery.chat.tombstone", http_method="POST", params=kwargs
         )
 
     
