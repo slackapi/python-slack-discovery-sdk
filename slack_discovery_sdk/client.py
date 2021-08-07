@@ -272,7 +272,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         team: Optional[str] = None, 
         latest: Optional[float] = None,
         oldest: Optional[float] = None,
-        reactions: Optional[int] = None,
+        reactions: Optional[Union[bool, int, str]] = None,
         limit: Optional[int] = None, 
         **kwargs
     ) -> DiscoveryResponse:
