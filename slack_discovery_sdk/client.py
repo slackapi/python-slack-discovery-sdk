@@ -1,7 +1,8 @@
 """A Python module for interacting with Slack's Discovery APIs."""
-from typing import Optional
+from typing import Optional, Union
 
 from .base_client import BaseDiscoveryClient, DiscoveryResponse
+from .errors import DiscoveryRequestError
 
 class DiscoveryClient(BaseDiscoveryClient):
     """A DiscoveryClient allows apps to communicate with the Slack Platform's Discovery APIs.
@@ -278,6 +279,11 @@ class DiscoveryClient(BaseDiscoveryClient):
         """Retrieves the history of the channel-object.
         Refer to https://api.slack.com/enterprise/discovery/methods#conversations_history for more details.
         """
+        if reactions is not None:
+            if isinstance(reactions, (int, str)):
+                reactions = int(reactions) == 1
+            if not isinstance(reactions, bool):
+                raise DiscoveryRequestError(f"Unexpected value type for reactions {type(reactions).__name__}")
         kwargs.update(
             {
                 "token": token, 
@@ -297,7 +303,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         self, 
         *, 
         token: Optional[str] = None, 
-        channel, 
+        channel: str, 
         team: Optional[str] = None,
         oldest: Optional[float] = None, 
         latest: Optional[float] = None,
@@ -326,7 +332,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         self, 
         *, 
         token: Optional[str] = None, 
-        channel, 
+        channel: str, 
         team: Optional[str] = None,
         offset: Optional[str] = None, 
         **kwargs
@@ -350,7 +356,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         self, 
         *, 
         token: Optional[str] = None, 
-        channel, 
+        channel: str, 
         team: Optional[str] = None,
         include_member_left: Optional[bool] = None, 
         offset: Optional[str] = None, 
@@ -406,7 +412,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         *, 
         token: Optional[str] = None, 
         team: Optional[str] = None,
-        channel, 
+        channel: str, 
         latest: Optional[float] = None,
         oldest: Optional[float] = None, 
         limit: Optional[int] = None, 
@@ -434,7 +440,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         *, 
         token: Optional[str] = None, 
         team: Optional[str] = None,
-        query, 
+        query: str, 
         include_messages: Optional[bool] = None,
         limit: Optional[int] = None, 
         latest: Optional[float] = None,
