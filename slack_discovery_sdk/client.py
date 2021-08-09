@@ -574,5 +574,70 @@ class DiscoveryClient(BaseDiscoveryClient):
             "discovery.chat.restore", http_method="POST", params=kwargs
         )
 
+    # ------------------------------------------------
+    # discovery.draft
+    # ------------------------------------------------
+
+    def discovery_drafts_list(
+        self,
+        *,
+        token: Optional[str] = None,
+        team: str,
+        offset: Optional[int] = None, 
+        oldest: Optional[float] = None, 
+        latest: Optional[float] = None,
+        limit: Optional[int] = None, 
+        **kwargs
+    ) -> DiscoveryResponse:
+        """The discovery.drafts.list method returns a list of drafts created upon the specified team.
+        Refer to https://api.slack.com/enterprise/discovery/methods#drafts_list for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "team": team,
+                "offset": offset,
+                "oldest": oldest,
+                "latest": latest,
+                "limit": limit
+            }   
+        )
+        return self.api_call(
+            "discovery.drafts.list", http_method="GET", params=kwargs
+        )
+
+    def discovery_draft_info(
+        self,
+        *,
+        token: Optional[str] = None,
+        team: str,
+        draft: str,
+        user: str,
+        offset: Optional[int] = None, 
+        oldest: Optional[float] = None, 
+        latest: Optional[float] = None,
+        limit: Optional[int] = None, 
+        **kwargs
+    ) -> DiscoveryResponse:
+        """The discovery.draft.info endpoint provides information associated with a singular draft.
+        Refer to https://api.slack.com/enterprise/discovery/methods#drafts_info for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "team": team,
+                "draft": draft,
+                "user": user,
+                "offset": offset,
+                "oldest": oldest,
+                "latest": latest,
+                "limit": limit
+            }   
+        )
+        return self.api_call(
+            "discovery.draft.info", http_method="GET", params=kwargs
+        )
 
     
