@@ -464,7 +464,7 @@ class DiscoveryClient(BaseDiscoveryClient):
             }
         )
         return self.api_call(
-            "discovery.chat.info", http_method="POST", params=kwargs
+            "discovery.chat.info", http_method="GET", params=kwargs
         )
 
     def discovery_chat_tombstone(
@@ -492,6 +492,36 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
         return self.api_call(
             "discovery.chat.tombstone", http_method="POST", params=kwargs
+        )
+
+    def discovery_chat_update(
+        self,
+        *,
+        token: Optional[str] = None,
+        channel: str,
+        ts: str,
+        text: str,
+        team: Optional[str] = None,
+        attachments: Optional[str] = None,
+        **kwargs
+    ) -> DiscoveryResponse:
+        """Use this method for quarantine and restoration. This method specifies text or attachments that 
+        should be included in place of the message. 
+        Refer to https://api.slack.com/enterprise/discovery/methods#chat_update for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "channel": channel,
+                "ts": ts,
+                "text": text,
+                "team": team,
+                "attachments": attachments,
+            }
+        )
+        return self.api_call(
+            "discovery.chat.info", http_method="POST", params=kwargs
         )
 
     
