@@ -1,29 +1,35 @@
 # Python-slack-discovery-sdk
 
-Welcome! This is the Python-slack-discovery-sdk. 
+Welcome! This is the Python-slack-discovery-sdk. This project serves to make using 
+the [Slack Discovery API's eaiser](https://api.slack.com/enterprise/discovery/methods#methods).
 
 **Note: You need a token with `discovery:read` and `discovery:write` scopes to use all of the methods in the SDK.** 
 
-To get this app to work follow the instructions below:
+## Running the app
 
-1. Ensure you have > Python 3.6
+Ensure you have Python 3.6 or greater by checking your Python version:
 
-2. Install dependencies and required packages  
+```bash
+python3 --version
+Python 3.9.5
+```
+
+Install dependencies and required packages  
 ```bash
 pip install -e .
 ```
-3. Set your enterprise level token, which should have `discovery:read` and `discovery:write` scopes:
+Set your enterprise level token, which should have `discovery:read` and `discovery:write` scopes:
 ```bash
 export SLACK_ENTERPRISE_TOKEN='xoxp-2243093387093-2239369144111....' 
 ```
 
-4. Run the app: 
+Run the app: 
 
 ```python
 python3 app.py
 ```
 
-5. You should see a response like the following:
+You should see a response like the following:
 
 ```python
 {'ok': True, 'channels': [{'id': 'D028****MK0W', 'team_id': 'E****NMCVTR', 'date_joined': 1626724524, 'date_left': 0, 'is_private': True, 'is_im': True, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C028BN****D4', 'team_id': 'T028QM7****U', 'date_joined': 1626724525, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'D0****EKV', 'team_id': 'E0283NMCVTR', 'date_joined': 1626724524, 'date_left': 0, 'is_private': True, 'is_im': True, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C028R2**TY', 'team_id': 'T02****U', 'date_joined': 1626983537, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C0298**TTJ', 'team_id': 'T028QM79BGU', 'date_joined': 1626724525, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': False}, {'id': 'C029****PEF2', 'team_id': 'T028Q****BGU', 'date_joined': 1626896861, 'date_left': 0, 'is_private': False, 'is_im': False, 'is_mpim': False, 'is_ext_shared': True}]}
