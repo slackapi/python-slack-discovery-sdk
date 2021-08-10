@@ -58,8 +58,8 @@ class TestFile:
         assert len(files_list_resp["files"]) <= resp_limit
         if len(files_list_resp["files"]) >= 1:
             first_file = files_list_resp["files"][0]["id"]
-            file_tombstone_resp = self.client.discovery_file_restore(file=first_file)
-            assert file_tombstone_resp["error"] is None
+            file_restore_resp = self.client.discovery_file_restore(file=first_file)
+            assert file_restore_resp["error"] is None
 
     def test_file_delete(self):
         resp_limit = 2
