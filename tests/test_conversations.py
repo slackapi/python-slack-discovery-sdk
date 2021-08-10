@@ -10,8 +10,12 @@ class TestConversations:
         self.client = DiscoveryClient(token=self.token)
 
     def test_conversations_recent(self):
-        response = self.client.discovery_conversations_recent(limit=2)
+        resp_limit = 2
+        response = self.client.discovery_conversations_recent(limit=resp_limit)
+        print(response)
         assert response["error"] is None
+        #ensure limit parameter is working properly
+        assert len(response["channels"]) <= resp_limit
 
     def test_conversations_list(self):
         response = self.client.discovery_conversations_list(limit=5)
