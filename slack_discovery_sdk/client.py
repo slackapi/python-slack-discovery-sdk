@@ -655,7 +655,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         **kwargs
     ) -> DiscoveryResponse:
         """This method returns files uploaded within a specified timeframe.
-        Refer to https://slack.com/api/discovery.files.list for more details.
+        Refer to https://api.slack.com/enterprise/discovery/methods#files_list for more details.
         """
    
         kwargs.update(
@@ -669,4 +669,91 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
         return self.api_call(
             "discovery.files.list", http_method="GET", params=kwargs
+        )
+
+    def discovery_file_info(
+        self,
+        *,
+        token: Optional[str] = None,
+        file: str, 
+        **kwargs
+    ) -> DiscoveryResponse:
+        """All file comments are shown here. File comments are Slack's odd message type.
+        Refer to https://api.slack.com/enterprise/discovery/methods#file_info for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "file": file
+            }   
+        )
+        return self.api_call(
+            "discovery.file.info", http_method="GET", params=kwargs
+        )
+
+    def discovery_file_tombstone(
+        self,
+        *,
+        token: Optional[str] = None,
+        file: str,
+        title: Optional[str] = None,
+        content: Optional[str] = None,
+        **kwargs
+    ) -> DiscoveryResponse:
+        """Tombstone a file, making it inaccessible. Download the file in advance for inspection,
+        because it will not be accessible after tombstoning.
+        Refer to https://api.slack.com/enterprise/discovery/methods#file_tombstone for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "file": file,
+                "title": title,
+                "content": content
+            }   
+        )
+        return self.api_call(
+            "discovery.file.tombstone", http_method="POST", params=kwargs
+        )
+
+    def discovery_file_restore(
+        self,
+        *,
+        token: Optional[str] = None,
+        file: str,
+        **kwargs
+    ) -> DiscoveryResponse:
+        """Restores a tombstoned file, making it accessible again.
+        Refer to https://api.slack.com/enterprise/discovery/methods#file_restore for more details.
+        """
+        kwargs.update(
+            {
+                "token": token,
+                "file": file,
+            }   
+        )
+        return self.api_call(
+            "discovery.file.restore", http_method="POST", params=kwargs
+        )
+
+    def discovery_file_delete(
+        self,
+        *,
+        token: Optional[str] = None,
+        file: str,
+        **kwargs
+    ) -> DiscoveryResponse:
+        """Deletes a file.
+        Refer to https://api.slack.com/enterprise/discovery/methods#file_delete for more details.
+        """
+        kwargs.update(
+            {
+                "token": token,
+                "file": file,
+            }   
+        )
+        return self.api_call(
+            "discovery.file.delete", http_method="POST", params=kwargs
         )
