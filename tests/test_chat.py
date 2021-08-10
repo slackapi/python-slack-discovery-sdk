@@ -45,13 +45,13 @@ class TestChat:
         )
         assert new_message.get("error") is None
 
-        updateMessageResp = self.client.discovery_chat_update(
+        update_msg_resp = self.client.discovery_chat_update(
             team=new_message["message"]["team"],
             channel=channel,
             ts=new_message["ts"],
             text="This message has been quarantined per DLP Policy 2.1.1",
         )
-        assert updateMessageResp.get("error") is None
+        assert update_msg_resp.get("error") is None
 
     def test_delete(self):
         conversations = self.web_client.users_conversations(team_id=self.team)
@@ -63,12 +63,12 @@ class TestChat:
         )
         assert new_message.get("error") is None
 
-        deleteMessageResp = self.client.discovery_chat_delete(
+        delete_msg_resp = self.client.discovery_chat_delete(
             team=new_message["message"]["team"],
             channel=channel,
             ts=new_message["ts"],
         )
-        assert deleteMessageResp.get("error") is None
+        assert delete_msg_resp.get("error") is None
     
     def test_restore(self):
         conversations = self.web_client.users_conversations(team_id=self.team)
@@ -80,13 +80,13 @@ class TestChat:
         )
         assert tombstone_msg.get("error") is None
 
-        tombstone = self.client.discovery_chat_tombstone(
+        tombstone_msg_resp = self.client.discovery_chat_tombstone(
             team=tombstone_msg["message"]["team"],
             channel=tombstone_channel,
             ts=tombstone_msg["ts"],
             content="This message is currently being reviewed by XYZ Company",
         )
-        assert tombstone.get("error") is None
+        assert tombstone_msg_resp.get("error") is None
 
         restore_msg = self.client.discovery_chat_restore(
             ts=tombstone_msg["ts"],
