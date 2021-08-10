@@ -1,17 +1,27 @@
-# discovery-sdk
+# Python-slack-discovery-sdk
+
+Welcome! This is the Python-slack-discovery-sdk. 
+
+**Note: You need a token with `discovery:read` and `discovery:write` scopes to use all of the methods in the SDK.** 
 
 To get this app to work follow the instructions below:
 
 1. Ensure you have > Python 3.6
-2. `pip install -e .`
-3. export your enterprise token, and userID as follows: (Note you will need to have an org wide level token to be able to access the discovery APIs). 
 
+2. Install dependencies and required packages  
+```bash
+pip install -e .
 ```
-export ENTERPRISE_TOKEN='xoxb-22**************************'
-export USER_ID='U028JEZZCKU'
+3. Set your enterprise level token, which should have `discovery:read` and `discovery:write` scopes:
+```bash
+export SLACK_ENTERPRISE_TOKEN='xoxp-2243093387093-2239369144111....' 
 ```
 
-4. Run the app: `python3 app.py`
+4. Run the app: 
+
+```python
+python3 app.py
+```
 
 5. You should see a response like the following:
 
