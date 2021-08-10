@@ -583,7 +583,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         *,
         token: Optional[str] = None,
         team: str,
-        offset: Optional[int] = None, 
+        offset: Optional[Union[int, float]], 
         oldest: Optional[float] = None, 
         latest: Optional[float] = None,
         limit: Optional[int] = None, 
@@ -640,4 +640,33 @@ class DiscoveryClient(BaseDiscoveryClient):
             "discovery.draft.info", http_method="GET", params=kwargs
         )
 
+    # ------------------------------------------------
+    # discovery.file
+    # ------------------------------------------------
     
+    def discovery_files_list(
+        self,
+        *,
+        token: Optional[str] = None,
+        offset: Optional[int] = None, 
+        oldest: Optional[float] = None, 
+        latest: Optional[float] = None,
+        limit: Optional[int] = None, 
+        **kwargs
+    ) -> DiscoveryResponse:
+        """This method returns files uploaded within a specified timeframe.
+        Refer to https://slack.com/api/discovery.files.list for more details.
+        """
+   
+        kwargs.update(
+            {
+                "token": token,
+                "offset": offset,
+                "oldest": oldest,
+                "latest": latest,
+                "limit": limit
+            }   
+        )
+        return self.api_call(
+            "discovery.files.list", http_method="GET", params=kwargs
+        )

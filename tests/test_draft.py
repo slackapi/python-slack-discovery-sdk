@@ -12,7 +12,6 @@ class TestDraft:
     def test_drafts_list(self):
         resp_limit = 3
         response = self.client.discovery_drafts_list(team=self.team, limit=resp_limit)
-        print(response)
         assert response["error"] is None
         #ensure limit parameter is working properly
         assert len(response["drafts"]) <= resp_limit
@@ -20,7 +19,6 @@ class TestDraft:
     def test_draft_info(self):
         resp_limit = 2
         response = self.client.discovery_drafts_list(team=self.team, limit=resp_limit)
-        print(response)
         assert response["error"] is None
         if len(response["drafts"]) > 1:
             user = response["drafts"][0]["user_id"]
@@ -30,5 +28,6 @@ class TestDraft:
                 team=team,
                 draft=draft,
                 user=user,
-                limit=resp_limit)
+                limit=resp_limit
+            )
             assert info_response["error"] is None
