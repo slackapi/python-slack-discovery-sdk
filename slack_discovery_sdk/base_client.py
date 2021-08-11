@@ -114,7 +114,7 @@ class BaseDiscoveryClient:
             param_token = params.pop("token")
             if param_token is not None:
                 token = param_token
-        cleansed_params = { k:v for k, v in params.items() if v is not None }
+        cleansed_params = {k: v for k, v in params.items() if v is not None}
         return self._urllib_api_call(
             token=token,
             http_method=http_method,

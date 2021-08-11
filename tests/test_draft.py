@@ -1,6 +1,11 @@
 import os
 from slack_discovery_sdk import DiscoveryClient
-from tests.env_variable_names import SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN, SLACK_DISCOVERY_SDK_TEST_TEAM_ID, SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID
+from tests.env_variable_names import (
+    SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN,
+    SLACK_DISCOVERY_SDK_TEST_TEAM_ID,
+    SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID,
+)
+
 
 class TestDraft:
     def setup_method(self):
@@ -13,7 +18,7 @@ class TestDraft:
         resp_limit = 3
         response = self.client.discovery_drafts_list(team=self.team, limit=resp_limit)
         assert response["error"] is None
-        #ensure limit parameter is working properly
+        # ensure limit parameter is working properly
         assert len(response["drafts"]) <= resp_limit
 
     def test_draft_info(self):
@@ -25,9 +30,6 @@ class TestDraft:
             team = response["drafts"][0]["team_id"]
             draft = response["drafts"][0]["id"]
             info_response = self.client.discovery_draft_info(
-                team=team,
-                draft=draft,
-                user=user,
-                limit=resp_limit
+                team=team, draft=draft, user=user, limit=resp_limit
             )
             assert info_response["error"] is None
