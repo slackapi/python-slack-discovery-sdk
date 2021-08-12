@@ -58,7 +58,7 @@ class TestConversations:
         response = self.client.discovery_conversations_history(
             limit=2, team=self.team, channel=self.channel, oldest=one_minute_ago
         )
-        assert response["error"] is None 
+        assert response["error"] is None
         assert len(response["messages"]) == 2
         # clean up the messages we posted in this test by deleting them
 
@@ -72,7 +72,6 @@ class TestConversations:
             channel=self.channel,
             ts=second_msg["ts"],
         )
-
 
     def test_conversations_edits(self):
         response = self.client.discovery_conversations_edits(
