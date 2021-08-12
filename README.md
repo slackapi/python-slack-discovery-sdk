@@ -3,7 +3,7 @@
 👋🏼 Welcome to the Python-slack-discovery-sdk! This project aims to make using 
 the [Slack Discovery API's](https://api.slack.com/enterprise/discovery/methods#methods) easier.
 
-🚨You need a token (i.e. the `SLACK_ENTERPRISE_TOKEN` in the steps below) with `discovery:read` and `discovery:write` scopes to use all of the methods in the SDK.🚨
+🚨 You need a token (i.e. the `SLACK_ENTERPRISE_TOKEN` in the steps below) with `discovery:read` and `discovery:write` scopes to use all of the methods in the SDK.🚨
 
 ## Running the app
 
