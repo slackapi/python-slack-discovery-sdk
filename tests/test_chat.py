@@ -93,7 +93,9 @@ class TestChat:
         assert tombstone_msg_resp.get("error") is None
 
         restore_msg = self.client.discovery_chat_restore(
-            ts=tombstone_msg["ts"], channel=tombstone_channel
+            team=self.team,
+            channel=tombstone_channel,
+            ts=tombstone_msg["ts"],
         )
 
         assert restore_msg.get("error") is None
