@@ -150,13 +150,6 @@ class DiscoveryResponse:
         Raises:
             SlackApiError: The request to the Slack API failed.
         """
-        if self._logger.level <= logging.DEBUG:
-            self._logger.debug(
-                "Received the following response - "
-                f"status: {self.status_code}, "
-                f"headers: {dict(self.headers)}, "
-                f"body: {self.body}"
-            )
         if (
             self.status_code == 200
             and self.body is not None

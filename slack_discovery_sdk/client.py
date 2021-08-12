@@ -563,7 +563,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         *,
         token: Optional[str] = None,
         team: str,
-        offset: Optional[Union[int, float]],
+        offset: Optional[Union[int, float]] = None,
         oldest: Optional[float] = None,
         latest: Optional[float] = None,
         limit: Optional[int] = None,

@@ -53,7 +53,9 @@ export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN=xoxb-xxxx
 # 3. A test workspace ID in the Enterprise Org
 #    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this workspace
 export SLACK_DISCOVERY_SDK_TEST_TEAM_ID=T1234567890
-
+# 4. A test channel ID in the Enterprise Org
+#    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this channel
+export SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID=C1234567890
 pytest tests/
 
 # You can check logs/pytest.log for trouble shooting

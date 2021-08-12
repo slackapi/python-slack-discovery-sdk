@@ -2,9 +2,11 @@
 
 import json
 import logging
+import time
 import urllib
 from base64 import b64encode
 from http.client import HTTPResponse
+from logging import Logger
 from ssl import SSLContext
 from typing import Dict
 from typing import Optional
@@ -19,12 +21,24 @@ from .internal_utils import (
     _get_url,
     _build_unexpected_body_error_message,
 )
+from .rate_limit_support import RateLimiter, calculate_random_jitter
 from .response import DiscoveryResponse
 from .proxy_support import load_http_proxy_from_env
 
 
 class BaseDiscoveryClient:
     BASE_URL = "https://slack.com/api/"
+
+    token: Optional[str]
+    base_url: str
+    timeout: int
+    ssl: Optional[SSLContext]
+    proxy: Optional[str]
+    headers: Dict[str, str]
+    default_params: Dict[str, str]
+    logger: Logger
+    rate_limit_error_prevention_enabled: bool
+    rate_limiter: RateLimiter
 
     def __init__(
         self,
@@ -33,12 +47,14 @@ class BaseDiscoveryClient:
         timeout: int = 30,
         ssl: Optional[SSLContext] = None,
         proxy: Optional[str] = None,
-        headers: Optional[dict] = None,
+        headers: Optional[Dict[str, str]] = None,
         user_agent_prefix: Optional[str] = None,
         user_agent_suffix: Optional[str] = None,
         # for Org-Wide App installation
         team_id: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
+        rate_limit_error_prevention_enabled: bool = True,
+        rate_limiter: Optional[RateLimiter] = None,
     ):
         self.token = None if token is None else token.strip()
         self.base_url = base_url
@@ -52,12 +68,15 @@ class BaseDiscoveryClient:
         self.default_params = {}
         if team_id is not None:
             self.default_params["team_id"] = team_id
-        self._logger = logger if logger is not None else logging.getLogger(__name__)
+        self.logger = logger if logger is not None else logging.getLogger(__name__)
 
         if self.proxy is None or len(self.proxy.strip()) == 0:
-            env_variable = load_http_proxy_from_env(self._logger)
+            env_variable = load_http_proxy_from_env(self.logger)
             if env_variable is not None:
                 self.proxy = env_variable
+
+        self.rate_limit_error_prevention_enabled = rate_limit_error_prevention_enabled
+        self.rate_limiter = rate_limiter if rate_limiter is not None else RateLimiter()
 
     def api_call(  # skipcq: PYL-R1710
         self,
@@ -104,7 +123,7 @@ class BaseDiscoveryClient:
                 ).decode("ascii")
                 headers["Authorization"] = f"Basic {value}"
             else:
-                self._logger.warning(
+                self.logger.warning(
                     f"As the auth: {auth}: {type(auth)} is unsupported, skipped"
                 )
 
@@ -168,27 +187,6 @@ class BaseDiscoveryClient:
 
         # True/False -> "1"/"0"
         params = convert_bool_to_0_or_1(params)
-
-        if self._logger.level <= logging.DEBUG:
-
-            def convert_params(values: dict) -> dict:
-                if not values or not isinstance(values, dict):
-                    return {}
-                return {
-                    k: ("(bytes)" if isinstance(v, bytes) else v)
-                    for k, v in values.items()
-                }
-
-            headers = {
-                k: "(redacted)" if k.lower() == "authorization" else v
-                for k, v in additional_headers.items()
-            }
-            self._logger.debug(
-                f"Sending a request - {http_method} {url}, "
-                f"params: {convert_params(params)}, "
-                f"headers: {headers}"
-            )
-
         request_headers = self._build_urllib_request_headers(
             token=self.token if token is None else token,
             additional_headers=additional_headers,
@@ -237,6 +235,19 @@ class BaseDiscoveryClient:
         Returns:
             dict {status: int, headers: Headers, body: str}
         """
+
+        url_elements = url.split("/")
+        if len(url_elements) >= 2:
+            api_method = url_elements[-1].split("?")[0]  # remove query string
+            self._do_stuff_for_rate_limit_error_prevention(api_method=api_method)
+
+        self._print_request_debug_log(
+            headers=headers,
+            http_method=http_method,
+            url=url,
+            params=params,
+        )
+
         url_encoded_params: str = urlencode(params or {})
         headers["Content-Type"] = "application/x-www-form-urlencoded"
 
@@ -292,6 +303,15 @@ class BaseDiscoveryClient:
                 url_encoded_params: str = resp.read().decode(
                     charset
                 )  # read the response body here
+                self._print_response_debug_log(
+                    status_code=resp.code,
+                    headers=resp.headers,
+                    body=url_encoded_params,
+                )
+                self.rate_limiter.append_api_call_result(
+                    api_method=api_method,
+                    is_success=True,
+                )
                 return {
                     "status": resp.code,
                     "headers": resp.headers,
@@ -299,23 +319,100 @@ class BaseDiscoveryClient:
                 }
             raise DiscoveryRequestError(f"Invalid URL detected: {url}")
         except HTTPError as e:
+            self.rate_limiter.append_api_call_result(
+                api_method=api_method,
+                is_success=False,
+            )
             resp = {"status": e.code, "headers": e.headers}
-            if e.code == 429:
-                # for compatibility with aiohttp
-                resp["headers"]["Retry-After"] = resp["headers"]["retry-after"]
-
             # read the response body here
             charset = e.headers.get_content_charset() or "utf-8"
             url_encoded_params: str = e.read().decode(charset)
+            if e.code == 429:
+                self._print_response_debug_log(
+                    status_code=e.code,
+                    headers=e.headers,
+                    body=url_encoded_params,
+                )
+                # for compatibility with aiohttp
+                resp["headers"]["Retry-After"] = resp["headers"]["retry-after"]
+
+                if self.rate_limit_error_prevention_enabled is True:
+                    sleep_seconds = int(resp["headers"]["retry-after"])
+                    log_message = f"Going to sleep for {sleep_seconds} seconds as this client got a rate limited error..."
+                    self.logger.info(log_message)
+                    time.sleep(sleep_seconds + calculate_random_jitter(factor=5.0))
+
+                    # Recursively call this method
+                    return self._perform_urllib_http_request(
+                        http_method=http_method,
+                        url=url,
+                        headers=headers,
+                        params=params,
+                    )
+
             resp["body"] = url_encoded_params
             return resp
 
         except Exception as err:
-            self._logger.error(f"Failed to send a request to Slack API server: {err}")
+            self.rate_limiter.append_api_call_result(
+                api_method=api_method,
+                is_success=False,
+            )
+            self.logger.error(f"Failed to send a request to Slack API server: {err}")
             raise err
 
+    def _print_request_debug_log(
+        self,
+        *,
+        headers: dict,
+        http_method: str,
+        url: str,
+        params: dict,
+    ):
+        if self.logger.level <= logging.DEBUG:
+
+            def convert_params(values: dict) -> dict:
+                if not values or not isinstance(values, dict):
+                    return {}
+                return {
+                    k: ("(bytes)" if isinstance(v, bytes) else v)
+                    for k, v in values.items()
+                }
+
+            headers = {
+                k: "(redacted)" if k.lower() == "authorization" else v
+                for k, v in headers.items()
+            }
+            self.logger.debug(
+                f"Sending a request - {http_method} {url}, "
+                f"params: {convert_params(params)}, "
+                f"headers: {headers}"
+            )
+
+    def _print_response_debug_log(
+        self,
+        *,
+        status_code: Optional[int] = None,
+        headers: Optional[Dict[str, str]] = None,
+        body: Optional[str] = None,
+    ):
+        if status_code >= 400:
+            self.logger.error(
+                "Received the following response - "
+                f"status: {status_code}, "
+                f"headers: {dict(headers)}, "
+                f"body: {body}"
+            )
+        elif self.logger.level <= logging.DEBUG:
+            self.logger.debug(
+                "Received the following response - "
+                f"status: {status_code}, "
+                f"headers: {dict(headers)}, "
+                f"body: {body}"
+            )
+
     def _build_urllib_request_headers(
-        self, token: str, additional_headers: dict
+        self, *, token: str, additional_headers: dict
     ) -> Dict[str, str]:
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         headers.update(self.headers)
@@ -324,3 +421,40 @@ class BaseDiscoveryClient:
         if additional_headers:
             headers.update(additional_headers)
         return headers
+
+    def _do_stuff_for_rate_limit_error_prevention(
+        self,
+        *,
+        api_method: str,
+    ):
+        if self.rate_limit_error_prevention_enabled is True:
+            # Check the current traffic
+            sleep_duration: float = self.rate_limiter.calculate_sleep_duration(
+                api_method
+            )
+            if self.logger.level <= logging.DEBUG:
+                report = self.rate_limiter.generate_metrics_report()
+                self.logger.debug(f"""Rate limit metrics: {report}""")
+
+            if sleep_duration > 0:
+                if self.logger.level <= logging.DEBUG:
+                    sleep_time = f"{round(sleep_duration * 1000, 1)} milliseconds"
+                    if sleep_duration >= 1:
+                        sleep_time = f"{round(sleep_duration, 2)} seconds"
+                    log_message = (
+                        "To prevent rate limited errors, "
+                        f"going to sleep for {sleep_time} before the next {api_method} API call ..."
+                    )
+                    self.logger.debug(log_message)
+                time.sleep(sleep_duration)
+        else:
+            # Periodically,maintain the metrics data to avoid confusion
+            if len(self.rate_limiter.org_call_histories_in_last_second) % 10:
+                self.rate_limiter.cleanup()
+
+            if self.logger.level <= logging.DEBUG:
+                report = self.rate_limiter.generate_metrics_report()
+                self.logger.debug(f"""Rate limit metrics: {report}""")
+
+        # Append this API call to the metrics
+        self.rate_limiter.append_api_call_timestamp(api_method=api_method)
