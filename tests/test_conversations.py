@@ -23,7 +23,6 @@ class TestConversations:
             token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN]
         )
 
-    # @pytest.mark.skip
     def test_conversations_recent_limit(self):
         resp_limit = 2
         response = self.client.discovery_conversations_recent(limit=resp_limit)
@@ -31,12 +30,10 @@ class TestConversations:
         # ensure limit parameter is working properly
         assert len(response["channels"]) <= resp_limit
 
-    # @pytest.mark.skip
     def test_conversations_list(self):
         response = self.client.discovery_conversations_list(limit=5)
         assert response["error"] is None
 
-    # @pytest.mark.skip
     def test_conversations_list_pagination(self):
         conversations = []
         limit_size = 2
@@ -48,7 +45,6 @@ class TestConversations:
                 break
         assert len(conversations) > limit_size
 
-    # @pytest.mark.skip
     def test_conversations_history_from_one_minute_ago(self):
 
         test_text = "This first message will be used to test getting conversation history from the last minute"
@@ -61,7 +57,7 @@ class TestConversations:
 
             # buffer time between posting messages and getting message history
             time.sleep(3)
-            # test to only get messages that are less than one hour old
+            # test to only get messages that are less than one minute old
             response = self.client.discovery_conversations_history(
                 limit=2,
                 team=self.team,
@@ -69,7 +65,7 @@ class TestConversations:
                 oldest=get_timestamp_last_minute(),
             )
             assert response["error"] is None
-            # check to see if there are multiple messages in the last minute
+            # if there are multiple messages in the last minute, one of them should be the one from above
             if len(response["messages"]) > 1 & len(response["messages"]) != 0:
                 for message in response["messsages"]:
                     if message["text"] == test_text:
@@ -86,7 +82,6 @@ class TestConversations:
                 ts=first_msg["ts"],
             )
 
-    # @pytest.mark.skip
     def test_conversations_edits_from_one_minute_ago(self):
         # this test will create a message, edit it, and find edited messgages in the last minute
 
@@ -106,7 +101,7 @@ class TestConversations:
                 text=updated_text,
             )
             time.sleep(1)
-            # sleep for two seconds to make sure conversation_edits has time to see the latest chat_update
+            # sleep for one second to make sure conversation_edits has time to see the latest chat_update
             # test to only get edited messages that are less than one minute old
             response = self.client.discovery_conversations_edits(
                 limit=1,
@@ -115,7 +110,7 @@ class TestConversations:
                 oldest=get_timestamp_last_minute(),
             )
             assert response["error"] is None
-            # check the array of edits, and ensure we can find our message we edited from above
+            # if there are more than one edits, one of them should be the one from above
             if len(response["edits"]) > 1 & len(response["edits"]) != 0:
                 for edit in response["edits"]:
                     if edit["text"] == updated_text:
@@ -132,7 +127,6 @@ class TestConversations:
                 ts=msg_to_edit["ts"],
             )
 
-    # @pytest.mark.skip
     def test_conversations_info_for_private_channel(self):
 
         try:
@@ -144,6 +138,7 @@ class TestConversations:
                 team=self.team, channel=test_channel["channel"]["id"]
             )
 
+            # if there are multiple channels, ensure we can find the one we created above
             if len(response["info"]) > 1 & len(response["info"]) != 0:
                 for info in response["info"]:
                     if info["created"] == test_channel_creation_time:
@@ -158,11 +153,9 @@ class TestConversations:
                 token=self.token, channel=test_channel["channel"]["id"]
             )
 
-    # @pytest.mark.skip
     def test_conversations_members_new_channel(self):
 
         try:
-            # create channel for testing purposes - make sure we can get info on this channel
             test_channel = self.create_channel()
 
             convo_join_resp = self.web_client.conversations_join(
@@ -193,7 +186,6 @@ class TestConversations:
                 token=self.token, channel=test_channel["channel"]["id"]
             )
 
-    # @pytest.mark.skip
     def test_conversations_renames(self):
 
         try:
@@ -208,6 +200,8 @@ class TestConversations:
             response = self.client.discovery_conversations_renames(
                 team=self.team, oldest=get_timestamp_last_minute()
             )
+
+            # if there are multiple renames, one of them should be the one from above
             if len(response["renames"]) > 1:
                 for rename in response["renames"]:
                     if rename == new_channel_name:
@@ -221,7 +215,6 @@ class TestConversations:
                 token=self.token, channel=test_channel["channel"]["id"]
             )
 
-    # @pytest.mark.skip
     def test_conversations_reactions(self):
 
         test_text = "This message will test reactions"
