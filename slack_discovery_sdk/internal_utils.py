@@ -89,7 +89,8 @@ def get_random_string() -> str:
     return random_string
 
 
-def get_timestamp_last_minute() -> str:
+def get_timestamp_last_minute() -> Any:
     now = time.time()
     seconds_in_one_minute = 60
     one_minute_ago = now - seconds_in_one_minute
+    return int(one_minute_ago)
