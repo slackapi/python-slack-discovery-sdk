@@ -1,4 +1,4 @@
-import platform
+import platform, string, random, time
 import sys
 from typing import Dict, Union, Optional, Any
 from urllib.parse import urljoin
@@ -81,3 +81,16 @@ def _build_unexpected_body_error_message(body: str) -> str:
         body_for_logging = body_for_logging[:100] + "..."
     message = f"Received a response in a non-JSON format: {body_for_logging}"
     return message
+
+
+def get_random_string(length: int = 10) -> str:
+    all_ascii_lowercase_chars = string.ascii_lowercase
+    random_string = "".join(random.choice(all_ascii_lowercase_chars) for _ in range(length))
+    return random_string
+
+
+def get_timestamp_last_minute() -> int:
+    now = time.time()
+    seconds_in_one_minute = 60
+    one_minute_ago = now - seconds_in_one_minute
+    return int(one_minute_ago)

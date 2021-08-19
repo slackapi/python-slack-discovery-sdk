@@ -3,7 +3,7 @@
 👋🏼 Welcome to the Python-slack-discovery-sdk! This project aims to make using 
 the [Slack Discovery API's](https://api.slack.com/enterprise/discovery/methods#methods) easier.
 
-🚨You need a token (i.e. the `SLACK_ENTERPRISE_TOKEN` in the steps below) with `discovery:read` and `discovery:write` scopes to use all of the methods in the SDK.🚨
+🚨 You need a token (i.e. the `SLACK_ENTERPRISE_TOKEN` in the steps below) with `discovery:read` and `discovery:write` scopes to use all of the methods in the SDK.🚨
 
 ## Running the app
 
@@ -40,7 +40,7 @@ You should see a response like the following:
 ```bash
 # Setup your virtual environment
 python --version  # make sure if you're using Python 3.6+
-pyton -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 pip install -U pip
 pip install -e ".[testing]"
