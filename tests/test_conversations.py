@@ -140,6 +140,7 @@ class TestConversations:
 
     def test_conversations_info_for_private_channel(self):
 
+        test_channel = None
         try:
             # create channel for testing purposes - make sure we can get info on this channel
             test_channel = self.create_channel()
@@ -167,6 +168,7 @@ class TestConversations:
             )
 
     def test_conversations_members_new_channel(self):
+        test_channel = None
 
         try:
             test_channel = self.create_channel()
@@ -201,6 +203,7 @@ class TestConversations:
             )
 
     def test_conversations_renames(self):
+        test_channel = None
 
         try:
             test_channel = self.create_channel()

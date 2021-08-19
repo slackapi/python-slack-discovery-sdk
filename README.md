@@ -40,7 +40,7 @@ You should see a response like the following:
 ```bash
 # Setup your virtual environment
 python --version  # make sure if you're using Python 3.6+
-pyton -m venv .venv
+python -m venv .venv
 source .venv/bin/activate
 pip install -U pip
 pip install -e ".[testing]"
