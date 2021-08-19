@@ -48,7 +48,7 @@ class TestConversations:
     def test_conversations_history_from_one_minute_ago(self):
 
         test_text = "This first message will be used to test getting conversation history from the last minute"
-
+        first_msg = None
         try:
             first_msg = self.web_client.chat_postMessage(
                 channel=self.channel,
@@ -65,22 +65,26 @@ class TestConversations:
                 oldest=get_timestamp_last_minute(),
             )
             assert response["error"] is None
+
             # if there are multiple messages in the last minute, one of them should be the one from above
-            if len(response["messages"]) > 1 & len(response["messages"]) != 0:
-                for message in response["messsages"]:
-                    if message["text"] == test_text:
-                        assert message["text"] == test_text
-            # if there is only one message in the last minute, it should be the one we created above
-            else:
-                assert response["messages"][0]["text"] == test_text
+            found = next(
+                (
+                    message["text"]
+                    for message in response["messages"]
+                    if message["text"] == test_text
+                ),
+                None,
+            )
+            assert found == test_text
 
         finally:
             # clean up the messages we posted in this test by deleting them
-            self.client.discovery_chat_delete(
-                team=first_msg["message"]["team"],
-                channel=self.channel,
-                ts=first_msg["ts"],
-            )
+            if first_msg is not None:
+                self.client.discovery_chat_delete(
+                    team=first_msg["message"]["team"],
+                    channel=self.channel,
+                    ts=first_msg["ts"],
+                )
 
     def test_conversations_edits_from_one_minute_ago(self):
         # this test will create a message, edit it, and find edited messgages in the last minute
@@ -88,6 +92,9 @@ class TestConversations:
         updated_text = (
             "this message has been edited via chat_updateMessage API in a test"
         )
+
+        msg_to_edit = None
+
         try:
 
             msg_to_edit = self.web_client.chat_postMessage(
@@ -111,21 +118,25 @@ class TestConversations:
             )
             assert response["error"] is None
             # if there are more than one edits, one of them should be the one from above
-            if len(response["edits"]) > 1 & len(response["edits"]) != 0:
-                for edit in response["edits"]:
-                    if edit["text"] == updated_text:
-                        assert edit["text"] == updated_text
+            found = next(
+                (
+                    edit["text"]
+                    for edit in response["edits"]
+                    if edit["text"] == updated_text
+                ),
+                None,
+            )
+            assert found == updated_text
             # if there is only one message in the last minute, it should be the one we created above
-            else:
-                assert response["edits"][0]["text"] == updated_text
 
         finally:
             # clean up message we posted in this test by deleting them
-            self.client.discovery_chat_delete(
-                team=msg_to_edit["message"]["team"],
-                channel=self.channel,
-                ts=msg_to_edit["ts"],
-            )
+            if msg_to_edit is not None:
+                self.client.discovery_chat_delete(
+                    team=msg_to_edit["message"]["team"],
+                    channel=self.channel,
+                    ts=msg_to_edit["ts"],
+                )
 
     def test_conversations_info_for_private_channel(self):
 
@@ -137,15 +148,17 @@ class TestConversations:
             response = self.client.discovery_conversations_info(
                 team=self.team, channel=test_channel["channel"]["id"]
             )
-
+            assert response["error"] is None
             # if there are multiple channels, ensure we can find the one we created above
-            if len(response["info"]) > 1 & len(response["info"]) != 0:
-                for info in response["info"]:
-                    if info["created"] == test_channel_creation_time:
-                        assert info["created"] == test_channel_creation_time
-            # if there is only one channel to get info on, it should be the one we created above
-            else:
-                assert response["info"][0]["created"] == test_channel_creation_time
+            found = next(
+                (
+                    info["created"]
+                    for info in response["info"]
+                    if info["created"] == test_channel_creation_time
+                ),
+                None,
+            )
+            assert found == test_channel_creation_time
 
         finally:
             # delete the test channel we created above
@@ -170,15 +183,16 @@ class TestConversations:
             )
 
             assert response["error"] is None
-
             # loop through members to ensure the creator is one of the members of the channel
-            if len(response["members"]) > 1 & len(response["members"]) != 0:
-                for member in response["members"]:
-                    if member["id"] == channel_creator:
-                        assert member["id"] == channel_creator
-            # if there is only one member it should be channel_creator
-            else:
-                assert response["members"][0]["id"] == channel_creator
+            found = next(
+                (
+                    member["id"]
+                    for member in response["members"]
+                    if member["id"] == channel_creator
+                ),
+                None,
+            )
+            assert found == channel_creator
 
         finally:
             # delete the test channel we created above
@@ -201,13 +215,17 @@ class TestConversations:
                 team=self.team, oldest=get_timestamp_last_minute()
             )
 
+            assert response["error"] is None
             # if there are multiple renames, one of them should be the one from above
-            if len(response["renames"]) > 1:
-                for rename in response["renames"]:
-                    if rename == new_channel_name:
-                        assert rename == new_channel_name
-            else:
-                assert response["renames"][0]["new_name"] == new_channel_name
+            found = next(
+                (
+                    rename["new_name"]
+                    for rename in response["renames"]
+                    if rename["new_name"] == new_channel_name
+                ),
+                None,
+            )
+            assert found == new_channel_name
 
         finally:
             # delete the test channel we created above
@@ -221,6 +239,7 @@ class TestConversations:
         thumbs_reaction = "thumbsup"
         smile_reaction = "smile"
         limit_only_two = 2
+        first_msg = None
 
         try:
 
@@ -250,29 +269,27 @@ class TestConversations:
                 limit=limit_only_two,
             )
 
-            # if we have more than one reaction (which we should) check to make sure we have thumbs reaciton
-            if len(response["reactions"]) > 1 & len(response["reactions"]) != 0:
-                for reaction in response["reactions"]:
-                    if reaction["name"] == thumbs_reaction:
-                        assert (
-                            reaction["name"] == thumbs_reaction
-                            and reaction["ts"] == first_msg["ts"]
-                        )
-            # if there is only one reaction for some reason, it should be smile or thumbs
-            else:
-                assert (
-                    response["reactions"][0]["name"] == smile_reaction
-                    or thumbs_reaction
-                )
+            assert response["error"] is None
+            # if we have more than one reaction (which we should) check to make sure we have thumbs reaction
+            found = next(
+                (
+                    reaction["name"]
+                    for reaction in response["reactions"]
+                    if reaction["name"] == smile_reaction
+                ),
+                None,
+            )
+            assert found == smile_reaction
 
         finally:
             # delete message from above
-            self.client.discovery_chat_delete(
-                team=first_msg["message"]["team"],
-                channel=self.channel,
-                ts=first_msg["ts"],
-            )
-            assert response["error"] is None
+            if first_msg is not None:
+                self.client.discovery_chat_delete(
+                    team=first_msg["message"]["team"],
+                    channel=self.channel,
+                    ts=first_msg["ts"],
+                )
+                assert response["error"] is None
 
     @pytest.mark.skip
     def test_conversations_search(self):

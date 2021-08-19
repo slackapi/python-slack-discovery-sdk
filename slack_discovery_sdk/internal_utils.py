@@ -83,13 +83,13 @@ def _build_unexpected_body_error_message(body: str) -> str:
     return message
 
 
-def get_random_string() -> str:
-    random_string = string.ascii_lowercase
-    random_string = "".join(random.choice(random_string) for i in range(10))
+def get_random_string(length: int = 10) -> str:
+    all_ascii_lowercase_chars = string.ascii_lowercase
+    random_string = "".join(random.choice(all_ascii_lowercase_chars) for _ in range(length))
     return random_string
 
 
-def get_timestamp_last_minute() -> Any:
+def get_timestamp_last_minute() -> int:
     now = time.time()
     seconds_in_one_minute = 60
     one_minute_ago = now - seconds_in_one_minute
