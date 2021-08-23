@@ -1,11 +1,12 @@
 import os
+from typing import Text
 from slack_discovery_sdk import DiscoveryClient
 from slack_sdk import WebClient
 from tests.env_variable_names import (
     SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN,
     SLACK_DISCOVERY_SDK_TEST_TEAM_ID,
     SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID,
-    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN
+    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN,
 )
 
 
@@ -18,6 +19,7 @@ class TestFile:
         self.web_client = WebClient(
             token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN]
         )
+
     def test_files_list(self):
         resp_limit = 2
         response = self.client.discovery_files_list(team=self.team, limit=resp_limit)
@@ -37,62 +39,96 @@ class TestFile:
         assert len(files) > limit_size
 
     def test_file_info_for_text_file(self):
-        test_content = "This is used to test file upload"
-        test_upload_file_type = 'text'
 
-        try: 
-            
-            file_upload = self.web_client.files_upload(
-                channels=self.channel,
-                content=test_content,
-            )
+        test_upload_file_type = "text"
+        file_upload = None
 
+        try:
+
+            file_upload = self.create_file()
             file_info_resp = self.client.discovery_file_info(
                 file=file_upload["file"]["id"],
             )
-            
+
             assert file_info_resp["error"] is None
             assert file_info_resp["file"]["filetype"] == test_upload_file_type
-        
+
         finally:
             # clean up the test file
             self.web_client.files_delete(file=file_upload["file"]["id"])
 
     def test_file_tombstone(self):
-        resp_limit = 2
-        files_list_resp = self.client.discovery_files_list(
-            team=self.team, limit=resp_limit
-        )
-        assert files_list_resp["error"] is None
-        # ensure limit parameter is working properly
-        assert len(files_list_resp["files"]) <= resp_limit
-        if len(files_list_resp["files"]) >= 1:
-            first_file = files_list_resp["files"][0]["id"]
-            file_tombstone_resp = self.client.discovery_file_tombstone(file=first_file)
-            assert file_tombstone_resp["error"] is None
+
+        file_upload = None
+
+        try:
+
+            file_upload = self.create_file()
+            file_id = file_upload["file"]["id"]
+
+            file_tombstone_resp = self.client.discovery_file_tombstone(
+                file=file_id,
+            )
+            assert (
+                file_id == file_tombstone_resp["file"]["id"]
+                and file_tombstone_resp["file"]["is_tombstoned"] == True
+            )
+
+        finally:
+            # clean up the test file - first we have to restore, then we can delete
+            self.client.discovery_file_restore(file=file_upload["file"]["id"])
+            self.web_client.files_delete(file=file_upload["file"]["id"])
 
     def test_file_restore(self):
-        resp_limit = 2
-        files_list_resp = self.client.discovery_files_list(
-            team=self.team, limit=resp_limit
-        )
-        assert files_list_resp["error"] is None
-        # ensure limit parameter is working properly
-        assert len(files_list_resp["files"]) <= resp_limit
-        if len(files_list_resp["files"]) >= 1:
-            first_file = files_list_resp["files"][0]["id"]
-            file_restore_resp = self.client.discovery_file_restore(file=first_file)
-            assert file_restore_resp["error"] is None
+
+        file_upload = None
+
+        try:
+
+            file_upload = self.create_file()
+            file_id = file_upload["file"]["id"]
+
+            self.client.discovery_file_tombstone(file=file_id)
+
+            file_restore_resp = self.client.discovery_file_restore(
+                file=file_upload["file"]["id"]
+            )
+
+            assert (
+                file_id == file_restore_resp["file"]["id"]
+                and file_restore_resp["file"]["is_tombstoned"] == False
+            )
+
+        finally:
+            # clean up the test file - first we have to restore, then we can delete
+            self.web_client.files_delete(file=file_upload["file"]["id"])
 
     def test_file_delete(self):
-        resp_limit = 2
-        files_list_resp = self.client.discovery_files_list(
-            team=self.team, limit=resp_limit
+
+        file_upload = None
+
+        try:
+
+            file_upload = self.create_file()
+            file_id = file_upload["file"]["id"]
+            file_delete_resp = self.client.discovery_file_delete(
+                file=file_upload["file"]["id"]
+            )
+
+            assert (
+                file_id == file_delete_resp["file"] and file_delete_resp["ok"] == True
+            )
+
+        finally:
+            # can pass as we already delete file above
+            pass
+
+    # aux function which uploads a text-based file
+    def create_file(self) -> any:
+        test_content = "This is used to test file upload"
+
+        file_upload = self.web_client.files_upload(
+            channels=self.channel,
+            content=test_content,
         )
-        assert files_list_resp["error"] is None
-        # ensure limit parameter is working properly
-        assert len(files_list_resp["files"]) <= resp_limit
-        if len(files_list_resp["files"]) >= 1:
-            first_file = files_list_resp["files"][0]["id"]
-            file_delete_resp = self.client.discovery_file_delete(file=first_file)
-            assert file_delete_resp["error"] is None
+        return file_upload
