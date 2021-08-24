@@ -314,7 +314,6 @@ class TestConversations:
             )
 
             while len(response["channels"]) <= 0:
-                counter = counter + 1
                 response = self.client.discovery_conversations_search(
                     team=self.team,
                     channel=self.channel,
