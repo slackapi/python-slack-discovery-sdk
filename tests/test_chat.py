@@ -21,7 +21,7 @@ class TestChat:
 
     def test_tombstone(self):
 
-        tombstone_type = "dlp_tombstone"
+        expected_message_subtype = "dlp_tombstone"
 
         try:
 

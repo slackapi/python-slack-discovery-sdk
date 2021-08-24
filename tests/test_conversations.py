@@ -45,7 +45,7 @@ class TestConversations:
             )
 
             while len(response["channels"]) <= 0:
-
+                time.sleep(5)
                 response = self.client.discovery_conversations_search(
                     team=self.team,
                     channel=self.channel,
