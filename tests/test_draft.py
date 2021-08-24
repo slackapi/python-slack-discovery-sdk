@@ -14,7 +14,7 @@ class TestDraft:
         self.channel = os.environ[SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID]
         self.client = DiscoveryClient(token=self.token)
 
-    def test_drafts_list(self):
+    def test_drafts_list_limit(self):
         resp_limit = 3
         response = self.client.discovery_drafts_list(team=self.team, limit=resp_limit)
         assert response["error"] is None
@@ -25,13 +25,12 @@ class TestDraft:
         drafts = []
         limit_size = 2
         page_num = 0
-        for page in self.client.discovery_drafts_list(limit=limit_size):
-            print(page)
-            conversations = conversations + page["channels"]
+        for page in self.client.discovery_drafts_list(team=self.team, limit=limit_size):
+            drafts = drafts + page["drafts"]
             page_num += 1
             if page_num > 5:
                 break
-        assert len(conversations) > limit_size
+        assert len(drafts) > limit_size
 
     def test_draft_info(self):
         resp_limit = 2

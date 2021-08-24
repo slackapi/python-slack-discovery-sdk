@@ -1,6 +1,6 @@
 import os
-from typing import Text
 from slack_discovery_sdk import DiscoveryClient
+from slack_discovery_sdk.response import DiscoveryResponse
 from slack_sdk import WebClient
 from tests.env_variable_names import (
     SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN,
@@ -124,7 +124,7 @@ class TestFile:
             pass
 
     # aux function which uploads a text-based file
-    def create_file(self) -> any:
+    def create_file(self) -> DiscoveryResponse:
         test_content = "This is used to test file upload"
 
         file_upload = self.web_client.files_upload(
