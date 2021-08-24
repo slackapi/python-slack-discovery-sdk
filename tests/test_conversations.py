@@ -23,6 +23,51 @@ class TestConversations:
             token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN]
         )
 
+    def test_conversations_search(self):
+        first_msg_text = "This message will test the search API"
+        first_msg = None
+
+        try:
+
+            first_msg = self.web_client.chat_postMessage(
+                channel=self.channel,
+                text=first_msg_text,
+            )
+            # usually takes around 25 seconds for the conversations search to return this message as found
+            time.sleep(25)
+
+            # check for renames from the last minute, which should include the rename from above
+            response = self.client.discovery_conversations_search(
+                team=self.team,
+                channel=self.channel,
+                include_messages=True,
+                query="search API",
+            )
+
+            while len(response["channels"]) <= 0:
+                time.sleep(5)
+                response = self.client.discovery_conversations_search(
+                    team=self.team,
+                    channel=self.channel,
+                    include_messages=True,
+                    query="search API",
+                )
+
+            assert (
+                response["channels"][0]["message"]["text"] == first_msg_text
+                and response["channels"][0]["message"]["ts"] == first_msg["ts"]
+            )
+
+        finally:
+            # delete message from above
+            if first_msg is not None:
+                self.client.discovery_chat_delete(
+                    team=first_msg["message"]["team"],
+                    channel=self.channel,
+                    ts=first_msg["ts"],
+                )
+                assert response["error"] is None
+
     def test_conversations_recent_limit(self):
         resp_limit = 2
         response = self.client.discovery_conversations_recent(limit=resp_limit)
@@ -293,10 +338,6 @@ class TestConversations:
                     ts=first_msg["ts"],
                 )
                 assert response["error"] is None
-
-    @pytest.mark.skip
-    def test_conversations_search(self):
-        pass
 
     def create_channel(self) -> any:
         test_channel = self.web_client.conversations_create(
