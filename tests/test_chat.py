@@ -1,3 +1,5 @@
+# Copyright 2021, Slack Technologies, LLC. All rights reserved.
+
 import os
 from slack_sdk import WebClient
 from slack_discovery_sdk import DiscoveryClient

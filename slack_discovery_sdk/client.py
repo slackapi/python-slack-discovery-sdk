@@ -1,3 +1,5 @@
+# Copyright 2021, Slack Technologies, LLC. All rights reserved.
+
 """A Python module for interacting with Slack's Discovery APIs."""
 from typing import Optional, Union
 

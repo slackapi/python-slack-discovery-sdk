@@ -1,3 +1,5 @@
+# Copyright 2021, Slack Technologies, LLC. All rights reserved.
+
 # An admin user token with discovery:read, discovery:write
 SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN = "SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"
 
