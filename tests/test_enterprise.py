@@ -1,3 +1,5 @@
+# Copyright 2021, Slack Technologies, LLC. All rights reserved.
+
 import os
 from slack_discovery_sdk import DiscoveryClient
 from tests.env_variable_names import SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN

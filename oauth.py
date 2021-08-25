@@ -1,3 +1,5 @@
+# Copyright 2021, Slack Technologies, LLC. All rights reserved.
+
 # This app serves the following endpoints:
 # * GET http://localhost:3000/slack/install
 # * GET http://localhost:3000/slack/oauth_redirect

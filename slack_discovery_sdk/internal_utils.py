@@ -1,3 +1,5 @@
+# Copyright 2021, Slack Technologies, LLC. All rights reserved.
+
 import platform, string, random, time
 import sys
 from typing import Dict, Union, Optional, Any
