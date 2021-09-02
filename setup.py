@@ -24,7 +24,6 @@ setuptools.setup(
     name="slack-discovery-sdk",
     version=__version__,
     author="Slack Technologies, Inc.",
-    author_email="opensource@slack.com",
     description="The Slack Discovery API SDK for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",

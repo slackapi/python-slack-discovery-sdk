@@ -44,7 +44,7 @@ class TestChat:
                 content="This message is currently being reviewed by XYZ Company",
             )
 
-            assert tombstone_type == tombstone["message"]["subtype"]
+            assert expected_message_subtype == tombstone["message"]["subtype"]
 
         finally:
             # clean up the messages we posted in this test by deleting them
