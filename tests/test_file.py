@@ -125,6 +125,62 @@ class TestFile:
             # can pass as we already delete file above
             pass
 
+    def test_single_file_release(self):
+
+        file_upload = None
+
+        try:
+
+            file_upload = self.create_file()
+            file_id = file_upload["file"]["id"]
+
+            # before we can release the file, we need to tombstone it first
+            self.client.discovery_file_tombstone(file=file_id)
+
+            # release the file
+            files_release_resp = self.client.discovery_files_release(files=file_id)
+            assert (
+                file_id == files_release_resp["files"][0]["file"]["id"]
+                and len(files_release_resp["failed_files"]) == 0
+            )
+
+        finally:
+            # clean up the test file - first we have to restore, then we can delete
+            self.web_client.files_delete(file=file_upload["file"]["id"])
+
+    def test_multiple_file_release(self):
+
+        file_upload_1 = None
+        file_upload_2 = None
+        files_to_release = []
+
+        try:
+
+            file_upload_1 = self.create_file()
+            file_id_1 = file_upload_1["file"]["id"]
+
+            file_upload_2 = self.create_file()
+            file_id_2 = file_upload_2["file"]["id"]
+
+            # before we can release the file, we need to tombstone it first
+            self.client.discovery_file_tombstone(file=file_id_1)
+            self.client.discovery_file_tombstone(file=file_id_2)
+
+            ## add file IDs we want to release to array
+            files_to_release.append(file_id_1)
+            files_to_release.append(file_id_2)
+            # release the file
+            files_release_resp = self.client.discovery_files_release(
+                files=files_to_release
+            )
+
+            assert len(files_release_resp["failed_files"]) == 0
+
+        finally:
+            # clean up the test file - first we have to restore, then we can delete
+            self.web_client.files_delete(file=file_id_1)
+            self.web_client.files_delete(file=file_id_2)
+
     # aux function which uploads a text-based file
     def create_file(self) -> DiscoveryResponse:
         test_content = "This is used to test file upload"

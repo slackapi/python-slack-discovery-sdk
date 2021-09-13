@@ -72,7 +72,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         kwargs.update(
             {
                 "token": token,
-                "curosr": cursor,
+                "cursor": cursor,
                 "limit": limit,
                 "include_deleted": include_deleted,
             }
@@ -707,3 +707,20 @@ class DiscoveryClient(BaseDiscoveryClient):
             }
         )
         return self.api_call("discovery.file.delete", http_method="POST", params=kwargs)
+
+    def discovery_files_release(
+        self, *, token: Optional[str] = None, files: str, **kwargs
+    ) -> DiscoveryResponse:
+        """The discovery.files.release endpoint can be used to release files that that been auto-tombstoned by the
+        pre-processing setting. The endpoint accepts an array of files that should be released for viewing in the UI.
+        Refer to https://api.slack.com/enterprise/discovery/methods#files_release for more details.
+        """
+        kwargs.update(
+            {
+                "token": token,
+                "files": files,
+            }
+        )
+        return self.api_call(
+            "discovery.files.release", http_method="POST", params=kwargs
+        )
