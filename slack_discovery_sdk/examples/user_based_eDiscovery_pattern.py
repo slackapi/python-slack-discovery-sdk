@@ -54,12 +54,10 @@ for conversation in list_of_conversations["channels"]:
     channel_conversation = client.discovery_conversations_history(
         channel=channel_id, team=team_id
     )
-    #print(channel_conversation)
-    print('$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-    print(channel_conversation)
     channel_conversation_json = json.dumps(channel_conversation.body, indent=4)
     export_json_to_file(channel_conversation_json, CONVERSATIONS_HISTORY_FILENAME, channel_id, user_id)
-
+    
+    #print(channel_conversation)
     ##{'ok': True, 'messages': 
     # [{'client_msg_id': '6d917772-0b8a-4621-902c-ef85d9fd9987', 'type': 'message', 'text': 'affff', 'user': 'U0271AV54NS',
     # 'ts': '1627515227.000200', 'team': 'T02752RBD2R', 'blocks': 
