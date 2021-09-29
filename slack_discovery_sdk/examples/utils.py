@@ -24,16 +24,16 @@ def export_json_to_file(new_items, logs_type, channel_id, user_id):
     """
 
     if channel_id != None:
-        channel_folder = create_folder_for_channel(channel_id, user_id, logs_type)
+        channel_folder = create_folder_for_channel(channel_id, user_id)
 
     file_name = logs_type + FILE_EXTENSION
-    new_items = json.dumps(new_items, indent=4)
+    
     with open(os.path.join(channel_folder, file_name), "a") as outfile:
         outfile.write(new_items)
 
     return None
 
-def create_folder_for_channel(channel_id, user_id, logs_type) -> str:
+def create_folder_for_channel(channel_id, user_id) -> str:
     """This method will create a folder to keep all output from the discovery calls 
     organized. It will create a folder based on channelID for a particular user: for example C02642201. 
     Args:
@@ -46,7 +46,7 @@ def create_folder_for_channel(channel_id, user_id, logs_type) -> str:
 
     formatted_date = datetime.date.strftime(current_day, "%m_%d_%Y")
 
-    path = formatted_date + "/" + user_id + "/" + channel_id + "/" + logs_type
+    path = formatted_date + "/" + user_id + "/" + channel_id + "/"
 
     if not os.path.exists(path):
         os.makedirs(path)
@@ -54,7 +54,7 @@ def create_folder_for_channel(channel_id, user_id, logs_type) -> str:
         shutil.rmtree(path)           # Removes all the subdirectories!
         os.makedirs(path)
 
-    return formatted_date + "/" + user_id + "/" + channel_id + "/" + logs_type
+    return formatted_date + "/" + user_id + "/" + channel_id + "/"
 
 def is_credit_card_number(credit_card) -> bool:
     valid_structure = r"[456]\d{3}(-?\d{4}){3}$"
