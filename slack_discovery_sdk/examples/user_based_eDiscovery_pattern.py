@@ -37,11 +37,6 @@ list_of_conversations = client.discovery_user_conversations(
 
 ## Step 3 - Retrieve the message history for each conversation returned in Step 2 using discovery.conversations.history
 
-print('listing convos')
-print(list_of_conversations)
-
-output_info = []
-
 for conversation in list_of_conversations["channels"]:
     # print(conversation)
     #{'id': 'D02EZ1KTRF0', 'team_id': 'T02752RBD2R', 'date_joined': 1632242279, 'date_left': 0,
