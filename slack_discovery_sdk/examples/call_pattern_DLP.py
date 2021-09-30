@@ -21,8 +21,6 @@ last_24_hour_conversations = client.discovery_conversations_recent(
     user=auth_test["user_id"], limit=500
 )
 
-recent_conversations_json = json.dumps(last_24_hour_conversations.body, indent=4)
-
 ## Step 2 - Call conversations_history on each of the previous conversations, to grab the text from each
 # conversation from each channel
 

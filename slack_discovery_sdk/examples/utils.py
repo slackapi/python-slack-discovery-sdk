@@ -27,7 +27,7 @@ def export_json_to_file(new_items, logs_type, channel_id, user_id):
         channel_folder = create_folder_for_channel(channel_id, user_id)
 
     file_name = logs_type + FILE_EXTENSION
-    
+
     with open(os.path.join(channel_folder, file_name), "a") as outfile:
         outfile.write(new_items)
 
@@ -44,7 +44,7 @@ def create_folder_for_channel(channel_id, user_id) -> str:
 
     current_day = datetime.date.today()
 
-    formatted_date = datetime.date.strftime(current_day, "%m_%d_%Y")
+    formatted_date = datetime.date.strftime(current_day, "%m/%d/%Y")
 
     path = formatted_date + "/" + user_id + "/" + channel_id + "/"
 
