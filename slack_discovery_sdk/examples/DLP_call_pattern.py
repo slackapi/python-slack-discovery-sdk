@@ -24,7 +24,9 @@ auth_test = client.auth_test()
 # initialize the web client, used for chat.postMessage
 web_client = WebClient(token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN])
 
-tombstone_msg = web_client.chat_postMessage(
+# post a message with a "credit card number". This CC is fake, but used to verify that our DLP engine
+# i.e. our "is_credit_card" function is working properly. This message should be then tombstoned.
+web_client.chat_postMessage(
     channel=test_channel,
     text="5122-2368-7954-3214",
 )
