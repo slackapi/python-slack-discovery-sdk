@@ -9,7 +9,7 @@ from utils import is_credit_card_number
 from tests.env_variable_names import (
     SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID,
     SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN,
-    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN
+    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN,
 )
 
 logging.basicConfig(level=logging.DEBUG)
@@ -21,10 +21,8 @@ client = DiscoveryClient(token=enterprise_token)
 # store the auth_test response, use it for the User_id field later
 auth_test = client.auth_test()
 
-#initialize the web client, used for chat.postMessage
-web_client = WebClient(
-    token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN]
-)
+# initialize the web client, used for chat.postMessage
+web_client = WebClient(token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN])
 
 tombstone_msg = web_client.chat_postMessage(
     channel=test_channel,
