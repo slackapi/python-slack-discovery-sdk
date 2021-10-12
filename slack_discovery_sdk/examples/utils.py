@@ -9,7 +9,7 @@ FILE_EXTENSION = ".json"
 ## and is by no means a production ready solution. Use this to get familiar with the discovery APIs.
 
 
-def export_json_to_file(new_items, logs_type, channel_id, user_id):
+def export_json_to_file(new_items: str, logs_type: str, channel_id: str, user_id: str):
     """This method is used to save data from the eDiscovery, DLP, and SIEM call patterns.
     This is just for example use, to make our partners and customers life easier. This is
     not meant to be a production implementation by any means.
@@ -21,7 +21,7 @@ def export_json_to_file(new_items, logs_type, channel_id, user_id):
     Returns:
         None
     """
-
+    print(type(new_items))
     if channel_id != None:
         channel_folder = create_folder_for_channel(channel_id, user_id)
 
@@ -30,10 +30,8 @@ def export_json_to_file(new_items, logs_type, channel_id, user_id):
     with open(os.path.join(channel_folder, file_name), "a") as outfile:
         outfile.write(new_items)
 
-    return None
 
-
-def create_folder_for_channel(channel_id, user_id) -> str:
+def create_folder_for_channel(channel_id: str, user_id: str) -> str:
     """This method will create a folder to keep all output from the discovery calls
     organized. It will create a folder based on channelID for a particular user: for example C02642201.
     Args:
@@ -57,7 +55,7 @@ def create_folder_for_channel(channel_id, user_id) -> str:
     return formatted_date + "/" + user_id + "/" + channel_id + "/"
 
 
-def is_credit_card_number(credit_card) -> bool:
+def is_credit_card_number(credit_card: str) -> bool:
     valid_structure = r"[456]\d{3}(-?\d{4}){3}$"
     no_four_repeats = r"((\d)-?(?!(-?\2){3})){16}"
     filters = valid_structure, no_four_repeats

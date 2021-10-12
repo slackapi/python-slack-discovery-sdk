@@ -18,8 +18,6 @@ logging.basicConfig(level=logging.DEBUG)
 enterprise_token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
 test_channel = os.environ[SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID]
 client = DiscoveryClient(token=enterprise_token)
-# store the auth_test response, use it for the User_id field later
-auth_test = client.auth_test()
 
 # initialize the web client, used for chat.postMessage
 web_client = WebClient(token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN])
@@ -36,9 +34,7 @@ web_client.chat_postMessage(
 # change parameters to run the function every 10 seconds (or desired interval)
 # using the latest params
 
-last_24_hour_conversations = client.discovery_conversations_recent(
-    user=auth_test["user_id"], limit=500
-)
+last_24_hour_conversations = client.discovery_conversations_recent(limit=500)
 
 # Step 2 - Call conversations_history on each of the previous conversations, to grab the text from each
 # conversation from each channel
