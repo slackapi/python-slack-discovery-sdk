@@ -9,6 +9,7 @@ from tests.env_variable_names import (
 )
 
 logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 enterprise_token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
 
@@ -16,4 +17,4 @@ enterprise_token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
 
 client = DiscoveryClient(token=enterprise_token)
 enterprise_info = client.discovery_enterprise_info()
-print(enterprise_info)
+logger.info(enterprise_info)

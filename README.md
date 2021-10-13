@@ -38,6 +38,20 @@ Set your enterprise level token, which should have `discovery:read` and `discove
 ```bash
 export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN='xoxp-2243093387093-2239369144111....' 
 ```
+
+## Running the Examples
+Use the following command to run a script which calls the `discovery.enterprise.info` endpoint. This endpoint returns basic information about the Enterprise Grid org where the app is installed, including all workspaces (teams). 
+
+```python
+python3 slack_discovery_sdk/examples/get_enterprise_info.py
+```
+
+You should see a response similar to the following (note the result below has been truncated for readability):
+
+```python
+DEBUG:slack_discovery_sdk.base_client:Rate limit metrics: DEBUG:slack_discovery_sdk.base_client:Received the following response - status: 200, headers: {'date': 'Wed, 13 Oct 2021 22:09:57 GMT',..., body: {"ok":true,"enterprise":{"id":"T027****D2R","name":"Enterprise-****-Sandbox","domain":"test-****","email_domain":"","icon":...,"image_default":true},"is_verified":false,"teams":[{"id":"****","name":"Enterprise-****-Sandbox","domain":"test-****","email_domain":"","icon":{"image_102":"https:\/\/a...avatars-teams\/ava_0021-88.png","image_default":true},"is_verified":false,"enterprise_id":"E**","is_enterprise":0,"created":1625594757,"archived":false,"deleted":false,"discoverable":"unlisted"}]}}
+```
+
 > **Note:** if you want to use all of the functionality that the SDK has to offer, you will need to export a few more environmental variables: 
 
 ```bash
@@ -50,20 +64,6 @@ export SLACK_DISCOVERY_SDK_TEST_TEAM_ID=T1234567890
 # 3. A test channel ID in the Enterprise Org
 #    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this channel
 export SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID=C1234567890
-```
-
-## Running the Examples
-Use the following command to run a script which calls the `discovery.enterprise.info` endpoint. This endpoint returns basic information about the Enterprise Grid org where the app is installed, including all workspaces (teams). 
-
-```python
-python3 slack_discovery_sdk/examples/get_enterprise_info.py
-```
-
-You should see a response similar to the following (note the result below has been truncated for readability):
-
-```python
-DEBUG:slack_discovery_sdk.base_client:Rate limit metrics: {'last_second_requests': 0, 'last_minute_requests_per_api_method': {}, 'successful_call_counts': {}, 'failed_call_counts': {}}...
-{'ok': True, 'enterprise': {'id': 'T027****D2R', 'name': 'Enterprise-******-Sandbox', 'domain': 'test-**', 'email_domain': '', 'icon': {'image_102': 'https://a.slack-edge.com/80588/img/avatars-teams/ava_****2.png', 'image_default': True}, 'is_verified': False, 'teams': [{'id': 'T027****D2R', 'name': 'Enterprise-****-Sandbox', 'domain': 'test-****', 'email_domain': '', 'icon': {'image_102': 'https://a.slack-edge.com/80588/img/avatars-teams/****-102.png', 'image_default': True}, 'is_verified': False, 'enterprise_id': '****', 'is_enterprise': 0, 'created': 1625594757, 'archived': False, 'deleted': False, 'discoverable': 'unlisted'}]}}
 ```
 
 There are various other scripts in the `slack_discovery_sdk/examples` folder, with each script serving to solve a different use case. Below you can find some basic information about each script:
