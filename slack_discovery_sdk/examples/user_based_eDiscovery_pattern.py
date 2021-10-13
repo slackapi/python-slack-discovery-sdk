@@ -21,10 +21,13 @@ CONVERSATIONS_HISTORY_FILENAME = "discovery_conversations_history"
 # Step 1 - Get the user ID of the user you'd like to see conversation history from
 
 auth_test = client.auth_test()
+
+# At this point, you should change the user_id variable to be the user_id of whichever user
+# you'd like to see the conversation of. The auth_test is just used for testing purposes here.
 user_id = auth_test["user_id"]
 
 # Step 2 - Use `discovery.user.conversations` to retrieve a list of conversation ID's
-# a user is a member of. We use limit of 500 here.
+# a user is a member of. user_id should be set to something *other* than auth_test at this point.
 
 list_of_conversations = client.discovery_user_conversations(user=user_id, limit=500)
 
