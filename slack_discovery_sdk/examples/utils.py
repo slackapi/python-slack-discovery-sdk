@@ -21,7 +21,6 @@ def export_json_to_file(new_items: str, logs_type: str, channel_id: str, user_id
     Returns:
         None
     """
-    print(type(new_items))
     if channel_id != None:
         channel_folder = create_folder_for_channel(channel_id, user_id)
 
