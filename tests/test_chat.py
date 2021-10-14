@@ -22,11 +22,8 @@ class TestChat:
         )
 
     def test_tombstone(self):
-
         expected_message_subtype = "dlp_tombstone"
-
         try:
-
             conversations = self.web_client.users_conversations(team_id=self.team)
             assert conversations.get("error") is None
 
@@ -58,7 +55,6 @@ class TestChat:
     def test_update(self):
         chat_update_text = "This message has been quarantined per DLP Policy 2.1.1"
         try:
-
             conversations = self.web_client.users_conversations(team_id=self.team)
             assert conversations.get("error") is None
 
@@ -77,7 +73,6 @@ class TestChat:
             assert update_msg_resp["message"]["text"] == chat_update_text
 
         finally:
-
             # clean up the messages we posted in this test by deleting them
             if message_to_update is not None:
                 self.client.discovery_chat_delete(
@@ -88,7 +83,6 @@ class TestChat:
 
     def test_delete(self):
         try:
-
             conversations = self.web_client.users_conversations(team_id=self.team)
             assert conversations.get("error") is None
 
@@ -120,7 +114,6 @@ class TestChat:
             "The Discovery API will first tombstone this message and then restore it..."
         )
         try:
-
             conversations = self.web_client.users_conversations(team_id=self.team)
             assert conversations.get("error") is None
 
