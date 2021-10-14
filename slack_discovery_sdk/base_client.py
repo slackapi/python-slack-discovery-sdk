@@ -40,6 +40,7 @@ class BaseDiscoveryClient:
     default_params: Dict[str, str]
     logger: Logger
     rate_limit_error_prevention_enabled: bool
+    number_of_rate_limiter_enabled_nodes: int
     rate_limiter: RateLimiter
 
     def __init__(
@@ -56,6 +57,7 @@ class BaseDiscoveryClient:
         team_id: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
         rate_limit_error_prevention_enabled: bool = True,
+        number_of_rate_limiter_enabled_nodes: int = 1,
         rate_limiter: Optional[RateLimiter] = None,
     ):
         self.token = None if token is None else token.strip()
@@ -78,7 +80,15 @@ class BaseDiscoveryClient:
                 self.proxy = env_variable
 
         self.rate_limit_error_prevention_enabled = rate_limit_error_prevention_enabled
-        self.rate_limiter = rate_limiter if rate_limiter is not None else RateLimiter()
+        self.number_of_rate_limiter_enabled_nodes = number_of_rate_limiter_enabled_nodes
+        self.rate_limiter = (
+            rate_limiter
+            if rate_limiter is not None
+            else RateLimiter(
+                enterprise_id=None,
+                number_of_nodes=number_of_rate_limiter_enabled_nodes,
+            )
+        )
 
     def api_call(  # skipcq: PYL-R1710
         self,

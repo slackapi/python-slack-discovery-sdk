@@ -11,12 +11,15 @@ from concurrent.futures.thread import ThreadPoolExecutor
 class TestEnterprise:
     def setup_method(self):
         self.token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
+        self.number_of_nodes = 3  # the default is 1
 
     @pytest.mark.skip
     def test_discovery_users(self):
         executor = ThreadPoolExecutor(max_workers=100)
         client = DiscoveryClient(
-            token=self.token, rate_limit_error_prevention_enabled=True
+            token=self.token,
+            rate_limit_error_prevention_enabled=True,
+            number_of_rate_limiter_enabled_nodes=self.number_of_nodes,
         )
 
         def run():
@@ -37,7 +40,9 @@ class TestEnterprise:
     def test_discovery_conversations_search(self):
         # Very strict rate limit
         client = DiscoveryClient(
-            token=self.token, rate_limit_error_prevention_enabled=True
+            token=self.token,
+            rate_limit_error_prevention_enabled=True,
+            number_of_rate_limiter_enabled_nodes=self.number_of_nodes,
         )
         for i in range(10):
             for search_result in client.discovery_conversations_search(
@@ -73,7 +78,9 @@ class TestEnterprise:
     def test_discovery_conversations_history(self):
         executor = ThreadPoolExecutor(max_workers=20)
         client = DiscoveryClient(
-            token=self.token, rate_limit_error_prevention_enabled=True
+            token=self.token,
+            rate_limit_error_prevention_enabled=True,
+            number_of_rate_limiter_enabled_nodes=self.number_of_nodes,
         )
 
         def run():

@@ -21,6 +21,7 @@ class RateLimiter:
     }
 
     enterprise_id: Optional[str]
+    number_of_nodes: int
     # list of timestamps
     org_call_histories_in_last_second: List[float]
     # key: method name (discovery.enterprise.info) to list of timestamps
@@ -35,9 +36,11 @@ class RateLimiter:
         self,
         *,
         enterprise_id: Optional[str] = None,
+        number_of_nodes: int = 1,
         max_requests_per_minute_for_each_api_method: Optional[Dict[str, int]] = None,
     ):
         self.enterprise_id = enterprise_id
+        self.number_of_nodes = number_of_nodes
         self.org_call_histories_in_last_second = []
         self.api_method_call_histories_in_last_minute = {}
         self.api_method_successful_call_counts = {}
@@ -95,7 +98,13 @@ class RateLimiter:
     def calculate_sleep_duration(self, api_method: str) -> float:
         self.cleanup()
         sleep_seconds = 0
-        last_second_org_call_count = len(self.org_call_histories_in_last_second)
+
+        # The estimated count of all the requests performed in the last second
+        last_second_org_call_count = (
+            len(self.org_call_histories_in_last_second) * self.number_of_nodes
+        )
+
+        # Calculate the sleep_seconds considering the last second traffic
         if last_second_org_call_count >= 10:
             sleep_seconds = 0.02 + calculate_random_jitter(0.02)  # 1/20 - 1/30
         elif last_second_org_call_count >= 20:
@@ -105,10 +114,13 @@ class RateLimiter:
         elif last_second_org_call_count >= 30:
             sleep_seconds = 0.5 + calculate_random_jitter(0.5)
 
+        # The estimated count of all the requests performed per endpoint in the last minute
         last_minutes_api_method_requests = (
             self.api_method_call_histories_in_last_minute.get(api_method, [])
-        )
+        ) * self.number_of_nodes
         last_minute_api_method_call_count = len(last_minutes_api_method_requests)
+
+        # Calculate the sleep_seconds considering the last minute traffic toward the endpoint
         max_requests_for_api_method = (
             self.max_requests_per_minute_for_each_api_method.get(
                 api_method, self.MAX_REQUESTS_PER_MINUTE_FOR_API_METHOD
@@ -149,6 +161,7 @@ class RateLimiter:
 
     def generate_metrics_report(self) -> Dict[str, str]:
         return {
+            "enterprise_id": self.enterprise_id,
             "last_second_requests": len(self.org_call_histories_in_last_second),
             "last_minute_requests_per_api_method": {
                 k: len(v)

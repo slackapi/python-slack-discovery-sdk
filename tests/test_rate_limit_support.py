@@ -10,32 +10,36 @@ class TestRateLimitSupport:
         pass
 
     def test_cleanup(self):
-        rate_limiter = RateLimiter(enterprise_id="E111")
-        now = time.time()
-        rate_limiter.org_call_histories_in_last_second = [
-            now,
-            now - 0.01,
-            now - 0.03,
-            now - 1.5,
-            now - 3,
+        rate_limiters = [
+            RateLimiter(enterprise_id="E111"),
+            RateLimiter(enterprise_id="E111", number_of_nodes=10),
         ]
-        rate_limiter.api_method_call_histories_in_last_minute = {
-            "discovery.enterprise.info": [
+        for rate_limiter in rate_limiters:
+            now = time.time()
+            rate_limiter.org_call_histories_in_last_second = [
                 now,
-                now - 10,
-                now - 30,
-                now - 100,
-                now - 300,
+                now - 0.01,
+                now - 0.03,
+                now - 1.5,
+                now - 3,
             ]
-        }
-        rate_limiter.cleanup()
-
-        assert len(rate_limiter.org_call_histories_in_last_second) == 3
-        assert (
-            len(
-                rate_limiter.api_method_call_histories_in_last_minute[
-                    "discovery.enterprise.info"
+            rate_limiter.api_method_call_histories_in_last_minute = {
+                "discovery.enterprise.info": [
+                    now,
+                    now - 10,
+                    now - 30,
+                    now - 100,
+                    now - 300,
                 ]
+            }
+            rate_limiter.cleanup()
+
+            assert len(rate_limiter.org_call_histories_in_last_second) == 3
+            assert (
+                len(
+                    rate_limiter.api_method_call_histories_in_last_minute[
+                        "discovery.enterprise.info"
+                    ]
+                )
+                == 3
             )
-            == 3
-        )
