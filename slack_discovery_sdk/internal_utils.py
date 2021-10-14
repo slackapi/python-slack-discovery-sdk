@@ -87,7 +87,9 @@ def _build_unexpected_body_error_message(body: str) -> str:
 
 def get_random_string(length: int = 10) -> str:
     all_ascii_lowercase_chars = string.ascii_lowercase
-    random_string = "".join(random.choice(all_ascii_lowercase_chars) for _ in range(length))
+    random_string = "".join(
+        random.choice(all_ascii_lowercase_chars) for _ in range(length)
+    )
     return random_string
 
 
