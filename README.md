@@ -88,6 +88,43 @@ The SDK and examples are to aid in your development process. Please feel free to
 
 ## Running tests
 
+To run the unit tests in this repository, creating a Discovery API enabled app is required.
+
+```yaml
+_metadata:
+  major_version: 1
+  minor_version: 1
+display_information:
+  name: discovery-api-test
+features:
+  bot_user:
+    display_name: discovery-api-test
+oauth_config:
+  redirect_urls:
+    - https://your-own-domain.ngrok.io/slack/oauth_redirect
+  scopes:
+    user:
+      - discovery:read
+      - discovery:write
+    bot:
+      - channels:manage
+      - channels:read
+      - chat:write
+      - commands
+      - groups:write
+      - im:write
+      - mpim:write
+      - reactions:write
+      - channels:join
+      - files:write
+settings:
+  org_deploy_enabled: true
+  socket_mode_enabled: false
+  token_rotation_enabled: false
+```
+
+And then, setting the bot / user tokens in the env variables as below:
+
 ```bash
 # Setup your virtual environment
 python --version  # make sure if you're using Python 3.6+
@@ -99,7 +136,7 @@ pip install -e ".[testing]"
 # Set required env variables
 # 1. An admin user token with discovery:read, discovery:write
 export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN=xoxp-xxx
-# 2. A normal bot token with chat:write, channels:read
+# 2. A normal bot token with many scopes
 export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN=xoxb-xxxx
 # 3. A test workspace ID in the Enterprise Org
 #    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this workspace

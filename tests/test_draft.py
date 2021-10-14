@@ -32,6 +32,7 @@ class TestDraft:
             page_num += 1
             if page_num > 5:
                 break
+        # To run this test, 3+ drafts should exist in the workspace
         assert len(drafts) > limit_size
 
     def test_draft_info(self):

@@ -1,4 +1,5 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
+from typing import Any
 
 import os, pytest, time
 from slack_sdk import WebClient
@@ -28,9 +29,7 @@ class TestConversations:
     def test_conversations_search(self):
         first_msg_text = "This message will test the search API"
         first_msg = None
-
         try:
-
             first_msg = self.web_client.chat_postMessage(
                 channel=self.channel,
                 text=first_msg_text,
@@ -93,7 +92,6 @@ class TestConversations:
         assert len(conversations) > limit_size
 
     def test_conversations_history_from_one_minute_ago(self):
-
         test_text = "This first message will be used to test getting conversation history from the last minute"
         first_msg = None
         try:
@@ -135,20 +133,15 @@ class TestConversations:
 
     def test_conversations_edits_from_one_minute_ago(self):
         # this test will create a message, edit it, and find edited messgages in the last minute
-
         updated_text = (
             "this message has been edited via chat_updateMessage API in a test"
         )
-
         msg_to_edit = None
-
         try:
-
             msg_to_edit = self.web_client.chat_postMessage(
                 channel=self.channel,
                 text="This message will be edited to test getting conversation history from the last minute",
             )
-
             self.web_client.chat_update(
                 channel=self.channel,
                 ts=msg_to_edit["ts"],
@@ -186,13 +179,11 @@ class TestConversations:
                 )
 
     def test_conversations_info_for_private_channel(self):
-
         test_channel = None
         try:
             # create channel for testing purposes - make sure we can get info on this channel
             test_channel = self.create_channel()
             test_channel_creation_time = test_channel["channel"]["created"]
-
             response = self.client.discovery_conversations_info(
                 team=self.team, channel=test_channel["channel"]["id"]
             )
@@ -210,28 +201,24 @@ class TestConversations:
 
         finally:
             # delete the test channel we created above
-            self.web_client.conversations_archive(
-                token=self.token, channel=test_channel["channel"]["id"]
-            )
+            if test_channel is not None:
+                self.web_client.conversations_archive(
+                    channel=test_channel["channel"]["id"]
+                )
 
     def test_conversations_members_new_channel(self):
         test_channel = None
-
         try:
             test_channel = self.create_channel()
-
             convo_join_resp = self.web_client.conversations_join(
-                token=self.token,
-                channel=test_channel["channel"]["id"],
+                channel=test_channel["channel"]["id"]
             )
-
             channel_creator = convo_join_resp["channel"]["creator"]
-
             response = self.client.discovery_conversations_members(
                 team=self.team, channel=test_channel["channel"]["id"]
             )
-
             assert response["error"] is None
+
             # loop through members to ensure the creator is one of the members of the channel
             found = next(
                 (
@@ -245,13 +232,13 @@ class TestConversations:
 
         finally:
             # delete the test channel we created above
-            self.web_client.conversations_archive(
-                token=self.token, channel=test_channel["channel"]["id"]
-            )
+            if test_channel is not None:
+                self.web_client.conversations_archive(
+                    channel=test_channel["channel"]["id"]
+                )
 
     def test_conversations_renames(self):
         test_channel = None
-
         try:
             test_channel = self.create_channel()
             new_channel_name = get_random_string()
@@ -279,20 +266,18 @@ class TestConversations:
 
         finally:
             # delete the test channel we created above
-            self.web_client.conversations_archive(
-                token=self.token, channel=test_channel["channel"]["id"]
-            )
+            if test_channel is not None:
+                self.web_client.conversations_archive(
+                    channel=test_channel["channel"]["id"]
+                )
 
     def test_conversations_reactions(self):
-
         test_text = "This message will test reactions"
         thumbs_reaction = "thumbsup"
         smile_reaction = "smile"
         limit_only_two = 2
         first_msg = None
-
         try:
-
             first_msg = self.web_client.chat_postMessage(
                 channel=self.channel,
                 text=test_text,
@@ -334,7 +319,7 @@ class TestConversations:
         finally:
             # delete message from above
             if first_msg is not None:
-                self.client.discovery_chat_delete(
+                response = self.client.discovery_chat_delete(
                     team=first_msg["message"]["team"],
                     channel=self.channel,
                     ts=first_msg["ts"],
