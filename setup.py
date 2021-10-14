@@ -14,10 +14,10 @@ with open(f"{here}/README.md", "r") as fh:
     long_description = fh.read()
 
 test_dependencies = [
-    "slack_sdk>=3.8.0,<4",
+    "slack_sdk>=3.11,<4",
     "pytest>=5,<6",
     "pytest-cov>=2,<3",
-    "black==21.7b0",
+    "black==21.9b0",
 ]
 
 setuptools.setup(
