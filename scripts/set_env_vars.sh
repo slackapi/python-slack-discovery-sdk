@@ -9,6 +9,11 @@ python3 --version
 python3 -m venv .venv
 source .venv/bin/activate
 
+# Upgrade to latest pip verison
+pip install -U pip
+# install required packages (testing package needed to run examples)
+pip install -e ".[testing]"
+
 ############# Needed to run Discovery SDK ####################################
 
 # Set env variables. The enterprise token is needed to use the SDK.
@@ -21,7 +26,7 @@ export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN='xoxp-**********'
 ############# Needed to run examples #########################################
 
 # A normal bot token with many scopes
-# export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN = "xoxb-*******"
+export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN = "xoxb-*******"
 
 # A test workspace ID in the Enterprise Org
 # SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this workspace
