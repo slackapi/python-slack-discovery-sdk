@@ -9,6 +9,7 @@
 
 Below are the steps needed to use the Discovery SDK.
 
+<!-- TODO: remember to change readme to use the set_env_vars script -->
 
 ## Check Your Python Version
 
