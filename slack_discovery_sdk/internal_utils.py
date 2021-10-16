@@ -5,7 +5,7 @@ import sys
 from typing import Dict, Union, Optional, Any
 from urllib.parse import urljoin
 
-from . import version
+from .version import __version__  # type:ignore
 
 
 def convert_bool_to_0_or_1(
@@ -33,7 +33,7 @@ def get_user_agent(prefix: Optional[str] = None, suffix: Optional[str] = None):
         e.g. 'Python/3.6.7 slack_discovery_sdk/1.0.0 Darwin/17.7.0'
     """
     # __name__ returns all classes, we only want the client
-    client = "{0}/{1}".format("slack_discovery_sdk", version.__version__)
+    client = "{0}/{1}".format("slack_discovery_sdk", __version__)
     python_version = "Python/{v.major}.{v.minor}.{v.micro}".format(v=sys.version_info)
     system_info = "{0}/{1}".format(platform.system(), platform.release())
     user_agent_string = " ".join([python_version, client, system_info])

@@ -1,26 +1,20 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
 import logging, os
-from slack_discovery_sdk import DiscoveryClient
+from slack_discovery_sdk import DiscoveryClient  # type: ignore
 from slack_sdk import WebClient
 
-from utils import is_credit_card_number
-
-from tests.env_variable_names import (
-    SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID,
-    SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN,
-    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN,
-)
+from .utils import is_credit_card_number
 
 logging.basicConfig(level=logging.DEBUG)
 
 # Initialize the client
-enterprise_token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
-test_channel = os.environ[SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID]
+enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
+test_channel = os.environ["SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID"]
 client = DiscoveryClient(token=enterprise_token)
 
 # initialize the web client, used for chat.postMessage
-web_client = WebClient(token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN])
+web_client = WebClient(token=os.environ["SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN"])
 
 # post a message with a "credit card number". This CC is fake, but used to verify that our DLP engine
 # i.e. our "is_credit_card" function is working properly. This message should be then tombstoned.

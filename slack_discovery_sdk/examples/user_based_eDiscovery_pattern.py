@@ -1,8 +1,8 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
 import logging, os, json
-from slack_discovery_sdk import DiscoveryClient
-from utils import export_json_to_file
+from slack_discovery_sdk import DiscoveryClient  # type: ignore
+from .utils import export_json_to_file
 
 logging.basicConfig(level=logging.DEBUG)
 

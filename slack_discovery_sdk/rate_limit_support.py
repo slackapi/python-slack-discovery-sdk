@@ -3,7 +3,7 @@
 import random
 import time
 from threading import Lock
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 
 
 class RateLimiter:
@@ -159,7 +159,9 @@ class RateLimiter:
 
         return sleep_seconds + calculate_random_jitter(factor=0.05)
 
-    def generate_metrics_report(self) -> Dict[str, str]:
+    def generate_metrics_report(
+        self,
+    ) -> Dict[str, Optional[Union[str, int, Dict[str, int]]]]:
         return {
             "enterprise_id": self.enterprise_id,
             "last_second_requests": len(self.org_call_histories_in_last_second),

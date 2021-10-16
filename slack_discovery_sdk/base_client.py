@@ -16,16 +16,16 @@ from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen, OpenerDirector, ProxyHandler, HTTPSHandler
 
-from slack_discovery_sdk.errors import DiscoveryRequestError, DiscoveryApiError
+from .errors import DiscoveryRequestError, DiscoveryApiError  # type:ignore
 from .internal_utils import (
     convert_bool_to_0_or_1,
     get_user_agent,
     _get_url,
     _build_unexpected_body_error_message,
-)
-from .rate_limit_support import RateLimiter, calculate_random_jitter
-from .response import DiscoveryResponse
-from .proxy_support import load_http_proxy_from_env
+)  # type:ignore
+from .rate_limit_support import RateLimiter, calculate_random_jitter  # type:ignore
+from .response import DiscoveryResponse  # type:ignore
+from .proxy_support import load_http_proxy_from_env  # type:ignore
 
 
 class BaseDiscoveryClient:
@@ -161,7 +161,7 @@ class BaseDiscoveryClient:
         api_url: str,
         headers: Dict[str, str],
         params: Dict[str, str],
-    ) -> Dict[str, any]:
+    ) -> Dict[str, any]:  # type:ignore
         """This method is supposed to be used only for DiscoveryResponse pagination
         You can paginate using Python's for iterator as below:
           for response in client.conversations_list(limit=100):
@@ -238,7 +238,7 @@ class BaseDiscoveryClient:
         url: str,
         headers: Dict[str, str],
         params: Dict[str, str],
-    ) -> Dict[str, any]:
+    ) -> Dict[str, any]:  # type:ignore
         """Performs an HTTP request and parses the response.
         Args:
             url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
@@ -343,7 +343,7 @@ class BaseDiscoveryClient:
             if e.code == 429:
                 self._print_response_debug_log(
                     status_code=e.code,
-                    headers=e.headers,
+                    headers=dict(e.headers.items()),
                     body=url_encoded_params,
                 )
                 # for compatibility with aiohttp
@@ -377,9 +377,9 @@ class BaseDiscoveryClient:
     def _print_request_debug_log(
         self,
         *,
-        headers: dict,
         http_method: str,
         url: str,
+        headers: dict,
         params: dict,
     ):
         if self.logger.level <= logging.DEBUG:
