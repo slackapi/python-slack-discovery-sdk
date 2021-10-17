@@ -3,8 +3,9 @@
 """A Python module for interacting with Slack's Discovery APIs."""
 from typing import Optional, Union
 
-from .base_client import BaseDiscoveryClient, DiscoveryResponse
-from .errors import DiscoveryRequestError
+from .base_client import BaseDiscoveryClient  # type:ignore
+from .response import DiscoveryResponse  # type:ignore
+from .errors import DiscoveryRequestError  # type:ignore
 
 
 class DiscoveryClient(BaseDiscoveryClient):

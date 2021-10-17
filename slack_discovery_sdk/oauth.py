@@ -7,7 +7,7 @@ from urllib.parse import parse_qs
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 from typing import Dict, Sequence, Union, Optional
 
-from . import DiscoveryClient
+from .client import DiscoveryClient  # type:ignore
 
 
 class DiscoveryOAuthApp:

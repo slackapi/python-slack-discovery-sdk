@@ -5,8 +5,8 @@
 import logging
 from typing import Optional
 
-import slack_discovery_sdk.errors as e
-from .internal_utils import _next_cursor_is_present
+from .errors import DiscoveryApiError  # type:ignore
+from .internal_utils import _next_cursor_is_present  # type:ignore
 
 
 class DiscoveryResponse:
@@ -40,7 +40,7 @@ class DiscoveryResponse:
         removed at anytime.
     """
 
-    def __init__(
+    def __init__(  # type: ignore
         self,
         *,
         client: "BaseDiscoveryClient",
@@ -159,4 +159,4 @@ class DiscoveryResponse:
         ):
             return self
         msg = "The request to the Slack API failed."
-        raise e.DiscoveryApiError(message=msg, response=self)
+        raise DiscoveryApiError(message=msg, response=self)
