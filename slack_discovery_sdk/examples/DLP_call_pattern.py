@@ -3,8 +3,7 @@
 import logging, os
 from slack_discovery_sdk import DiscoveryClient  # type: ignore
 from slack_sdk import WebClient
-
-from utils import is_credit_card_number
+import utils
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -44,7 +43,7 @@ for conversation in last_24_hour_conversations["channels"]:
         # A valid credit card for our logic is something like the following: '5122-2368-7954-3214'
         # Please note this is just example logic, to help you understand how to use the Discovery APIs.
 
-        if is_credit_card_number(message["text"]):
+        if utils.is_credit_card_number(message["text"]):
             client.discovery_chat_tombstone(
                 ts=message["ts"],
                 channel=conversation["id"],
