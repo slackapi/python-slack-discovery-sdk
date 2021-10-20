@@ -9,35 +9,91 @@
 
 Below are the steps needed to use the Discovery SDK.
 
-<!-- TODO: remember to change readme to use the set_env_vars script -->
+# 👨🏻‍💻 Understanding the Setup Script 👨🏻‍💻
 
-## Check Your Python Version
+In order to speed up the development process, we've provided you with a script called 
+`set_env_vars.sh` in the scripts folder to automate a few things needed to run the SDK. 
+The script accomplishes the following things using the following code:
+* Prints your current Python version (<b>you will need Python version 3.6 or greater for this SDK</b>) 
+  ```bash
+  python3 --version
+  ```
+* Sets your Virtual Environment
+  ```bash
+  python3 -m venv .venv
+  source .venv/bin/activate
+  ```
+* Ensures pip is updated to the latest version
+  ```bash
+  pip install -U pip
+  ```
+* Installs required packages and dependencies
+  ```bash
+  pip install -e ".[testing]"
+  ```
 
-Ensure you have Python 3.6 or greater by checking your Python version:
+## 👨🏻‍💻 Adding Env Variables to Setup Script 👨🏻‍💻
 
-```bash
-python3 --version
-Python 3.9.5
+🚨 At this point, you'll need to edit the `scripts/set_env_vars.sh` script in an editor of your choice 🚨
+
+Edit the line below, and add in your token with `discovery:read` and `discovery:write` scopes.
+```
+export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN='xoxp-**********'
 ```
 
-## Set your Virtual Environment (Optional, but Recommended)
+Now, if you want to run the examples in the `slack_discovery_sdk/examples` directory, you'll need to set 
+a few other additional environmental variables.  
 
-```bash
-# Setup your virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
+Edit the lines below, and add in the appropriate tokens:
+
+```
+# A normal bot token with many scopes
+export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN = "xoxb-*******"
+
+# A test workspace ID in the Enterprise Org
+# SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this workspace
+export SLACK_DISCOVERY_SDK_TEST_TEAM_ID='T0********'
+
+# A test channel ID in the Enterprise Org
+export SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID='C0******'
+
+# Used for audit logs API (examples/audit_logs_pattern.py)
+# A User Token with auditlogs:read scopes, 
+export SLACK_DISCOVERY_SDK_TEST_USER_AUDIT_TOKEN='xoxp-*************'
 ```
 
-## Install Dependencies and required packages:
+🚨 Once you are done adding in your tokens, save the file 🚨
+
+> Note: before you can run this script, you will need to mark the file as executable with the following command:
 ```bash
-pip install -e .
+chmod +x scripts/set_env_vars.sh
 ```
-## Set Environmental Variables
 
-Set your enterprise level token, which should have `discovery:read` and `discovery:write` scopes:
+## 👨🏻‍💻 Run the Setup Script 👨🏻‍💻
+Use the following command to run the script:
+
+> Note: you must use the `source` command so that the env variables are set properly.
 
 ```bash
-export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN='xoxp-2243093387093-2239369144111....' 
+source ./scripts/set_env_vars.sh
+```
+
+If all went well, you should see the following output:
+```bash
+Your current Python version is: 
+Python 3.10.0
+Setting your virtual env.
+Success.
+Setting your SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN.
+Success.
+Setting your SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN (this is needed if you want to run the examples).
+Success.
+Setting your SLACK_DISCOVERY_SDK_TEST_TEAM_ID (this is needed if you want to run the examples).
+Success.
+Setting your SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID (this is needed if you want to run the examples).
+Success.
+Setting your SLACK_DISCOVERY_SDK_TEST_USER_AUDIT_TOKEN (this is needed if you want to run the examples).
+Success.
 ```
 
 ## Running the Examples
@@ -51,20 +107,6 @@ You should see a response similar to the following (note the result below has be
 
 ```python
 DEBUG:slack_discovery_sdk.base_client:Rate limit metrics: DEBUG:slack_discovery_sdk.base_client:Received the following response - status: 200, headers: {'date': 'Wed, 13 Oct 2021 22:09:57 GMT',..., body: {"ok":true,"enterprise":{"id":"T027****D2R","name":"Enterprise-****-Sandbox","domain":"test-****","email_domain":"","icon":...,"image_default":true},"is_verified":false,"teams":[{"id":"****","name":"Enterprise-****-Sandbox","domain":"test-****","email_domain":"","icon":{"image_102":"https:\/\/a...avatars-teams\/ava_0021-88.png","image_default":true},"is_verified":false,"enterprise_id":"E**","is_enterprise":0,"created":1625594757,"archived":false,"deleted":false,"discoverable":"unlisted"}]}}
-```
-
-> **Note:** if you want to use all of the functionality that the SDK has to offer, you will need to export a few more environmental variables: 
-
-```bash
-
-# 1. A normal bot token with chat:write, channels:read
-export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN=xoxb-xxxx
-# 2. A test workspace ID in the Enterprise Org
-#    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this workspace
-export SLACK_DISCOVERY_SDK_TEST_TEAM_ID=T1234567890
-# 3. A test channel ID in the Enterprise Org
-#    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this channel
-export SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID=C1234567890
 ```
 
 There are various other scripts in the `slack_discovery_sdk/examples` folder, with each script serving to solve a different use case. Below you can find some basic information about each script:

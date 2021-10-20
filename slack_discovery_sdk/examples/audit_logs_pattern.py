@@ -27,7 +27,7 @@ user_id = auth_test["user_id"]
 # Initialize the audit log client
 audit_log_client = AuditLogsClient(
     # A User Token with auditlogs:read scopes, used for audit logs API
-    token=os.environ["SLACK_DISCOVERY_SDK_TEST_USER_TOKEN"]
+    token=os.environ["SLACK_DISCOVERY_SDK_TEST_USER_AUDIT_TOKEN"]
 )
 
 # Call audit_logs_actions(), convert it into json, and export json to a file
