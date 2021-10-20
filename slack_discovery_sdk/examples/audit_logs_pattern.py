@@ -2,7 +2,7 @@
 
 import logging, os, json
 from slack_discovery_sdk import DiscoveryClient  # type: ignore
-from .utils import export_json_to_file
+from utils import export_json_to_file  # type: ignore
 
 from slack_sdk.audit_logs.v1.client import AuditLogsClient
 
@@ -34,18 +34,20 @@ audit_log_client = AuditLogsClient(
 audit_log_actions = audit_log_client.actions()
 audit_log_actions_json = json.dumps(audit_log_actions.body, indent=4)
 export_json_to_file(
-    audit_log_actions_json,
-    AUDIT_LOG_ACTIONS_FILENAME,
-    "audit_logs",
-    user_id,
+    new_items=audit_log_actions_json,
+    base_dir="./example-outputs/",
+    logs_type=AUDIT_LOG_ACTIONS_FILENAME,
+    channel_id="audit_logs",
+    user_id=user_id,
 )
 
 # Call audit_logs() to look for any public channel created event, and export json to a file
 audit_logs = audit_log_client.logs(action="public_channel_created", actor=user_id)
 audit_log_channel_created_json = json.dumps(audit_logs.body, indent=4)
 export_json_to_file(
-    audit_log_channel_created_json,
-    AUDIT_LOG_CHANNEL_CREATED_FILENAME,
-    "audit_logs",
-    user_id,
+    new_items=audit_log_channel_created_json,
+    base_dir="./example-outputs/",
+    logs_type=AUDIT_LOG_CHANNEL_CREATED_FILENAME,
+    channel_id="audit_logs",
+    user_id=user_id,
 )
