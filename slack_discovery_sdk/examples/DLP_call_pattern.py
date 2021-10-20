@@ -43,9 +43,7 @@ for conversation in last_24_hour_conversations["channels"]:
         # Step 3 - check each message and see if it contains a credit card number. If it does, tombstone the message.
         # A valid credit card for our logic is something like the following: '5122-2368-7954-3214'
         # Please note this is just example logic, to help you understand how to use the Discovery APIs.
-
         if is_credit_card_number(message["text"]):
             client.discovery_chat_tombstone(
-                ts=message["ts"],
-                channel=conversation["id"],
+                ts=message["ts"], channel=conversation["id"], team=message["team"]
             )
