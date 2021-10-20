@@ -9,7 +9,13 @@ FILE_EXTENSION = ".json"
 ## and is by no means a production ready solution. Use this to get familiar with the discovery APIs.
 
 
-def export_json_to_file(new_items: str, logs_type: str, channel_id: str, user_id: str):
+def export_json_to_file(
+    new_items: str,
+    base_dir: str,
+    logs_type: str,
+    channel_id: str,
+    user_id: str,
+):
     """This method is used to save data from the eDiscovery, DLP, and SIEM call patterns.
     This is just for example use, to make our partners and customers life easier. This is
     not meant to be a production implementation by any means.
@@ -22,7 +28,11 @@ def export_json_to_file(new_items: str, logs_type: str, channel_id: str, user_id
         None
     """
     if channel_id != None:
-        channel_folder = create_folder_for_channel(channel_id, user_id)
+        channel_folder = create_folder_for_channel(
+            base_dir=base_dir,
+            channel_id=channel_id,
+            user_id=user_id,
+        )
 
     file_name = logs_type + FILE_EXTENSION
 
@@ -30,20 +40,27 @@ def export_json_to_file(new_items: str, logs_type: str, channel_id: str, user_id
         outfile.write(new_items)
 
 
-def create_folder_for_channel(channel_id: str, user_id: str) -> str:
+def create_folder_for_channel(
+    base_dir: str,
+    channel_id: str,
+    user_id: str,
+) -> str:
     """This method will create a folder to keep all output from the discovery calls
     organized. It will create a folder based on channelID for a particular user: for example C02642201.
     Args:
-        None
+        base_dir: base directory
+        channel_id: channel ID
+        user_id: user ID
+
     Returns:
-        Str which resresents the channel
+        Str which represents the channel
     """
 
     current_day = datetime.date.today()
 
     formatted_date = datetime.date.strftime(current_day, "%Y/%m/%d")
 
-    path = formatted_date + "/" + user_id + "/" + channel_id + "/"
+    path = base_dir + formatted_date + "/" + user_id + "/" + channel_id + "/"
 
     if not os.path.exists(path):
         os.makedirs(path)
@@ -51,7 +68,7 @@ def create_folder_for_channel(channel_id: str, user_id: str) -> str:
         shutil.rmtree(path)  # Removes all the subdirectories!
         os.makedirs(path)
 
-    return formatted_date + "/" + user_id + "/" + channel_id + "/"
+    return path
 
 
 def is_credit_card_number(credit_card: str) -> bool:

@@ -2,7 +2,7 @@
 
 import logging, os, json
 from slack_discovery_sdk import DiscoveryClient  # type: ignore
-from .utils import export_json_to_file
+from utils import export_json_to_file  # type: ignore
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -44,5 +44,9 @@ for conversation in list_of_conversations["channels"]:
     )
     channel_conversation_json = json.dumps(channel_conversation.body, indent=4)
     export_json_to_file(
-        channel_conversation_json, CONVERSATIONS_HISTORY_FILENAME, channel_id, user_id
+        new_items=channel_conversation_json,
+        base_dir="./example-outputs/",
+        logs_type=CONVERSATIONS_HISTORY_FILENAME,
+        channel_id=channel_id,
+        user_id=user_id,
     )
