@@ -57,8 +57,7 @@ for conversation in list_of_conversations["channels"]:
         )
     else:
         edits_response = client.discovery_conversations_edits(
-            channel=channel_id,
-            team=team_id
+            channel=channel_id, team=team_id
         )
         channel_conversation.body["has_edits"] = edits_response["edits"]
         edits_response_json = json.dumps(channel_conversation.body, indent=4)
@@ -69,8 +68,3 @@ for conversation in list_of_conversations["channels"]:
             channel_id=channel_id,
             user_id=user_id,
         )
-
-
-
-
-
