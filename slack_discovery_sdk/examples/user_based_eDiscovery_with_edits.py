@@ -59,7 +59,7 @@ for conversation in list_of_conversations["channels"]:
         edits_response = client.discovery_conversations_edits(
             channel=channel_id, team=team_id
         )
-        channel_conversation.body["has_edits"] = edits_response["edits"]
+        channel_conversation.body["edits"] = edits_response["edits"]
         edits_response_json = json.dumps(channel_conversation.body, indent=4)
         export_json_to_file(
             new_items=edits_response_json,
