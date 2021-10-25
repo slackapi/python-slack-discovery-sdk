@@ -10,7 +10,6 @@ enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
 
 client = DiscoveryClient(token=enterprise_token)
 
-CONVERSATIONS_HISTORY_WITH_EDITS_FILENAME = "discovery_conversations_edits"
 CONVERSATIONS_HISTORY_FILENAME = "discovery_conversations"
 
 # CALL PATTERN OVERVIEW - User Based Discovery with Edits
@@ -59,12 +58,12 @@ for conversation in list_of_conversations["channels"]:
         edits_response = client.discovery_conversations_edits(
             channel=channel_id, team=team_id
         )
-        channel_conversation.body["has_edits"] = edits_response["edits"]
+        channel_conversation.body["edits"] = edits_response["edits"]
         edits_response_json = json.dumps(channel_conversation.body, indent=4)
         export_json_to_file(
             new_items=edits_response_json,
             base_dir="./example-outputs/",
-            logs_type=CONVERSATIONS_HISTORY_WITH_EDITS_FILENAME,
+            logs_type=CONVERSATIONS_HISTORY_FILENAME,
             channel_id=channel_id,
             user_id=user_id,
         )
