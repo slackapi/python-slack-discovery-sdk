@@ -12,6 +12,16 @@ python3 -m venv .venv
 source .venv/bin/activate
 echo "Success."
 
+# Ensures pip is updated to the latest version
+echo "Updating pip"
+pip install -U pip
+echo "Sucessfully updated pip"
+
+# Installs required packages and dependencies
+echo "Installing required packages"
+pip install -e ".[testing]"
+echo "Sucessfully installed required packages"
+
 ############# Needed to run SDK ####################################
 echo "Setting your SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN."
 

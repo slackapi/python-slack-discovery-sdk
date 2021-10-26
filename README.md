@@ -9,7 +9,7 @@
 
 Below are the steps needed to use the Discovery SDK.
 
-# 👨🏻‍💻 Understanding the Setup Script 👨🏻‍💻
+# 👨🏻‍💻 Understanding the Setup Script 👩🏻‍💻
 
 In order to speed up the development process, we've provided you with a script called 
 `set_env_vars.sh` in the scripts folder to automate a few things needed to run the SDK. 
@@ -32,7 +32,7 @@ The script accomplishes the following things using the following code:
   pip install -e ".[testing]"
   ```
 
-## 👨🏻‍💻 Adding Env Variables to Setup Script 👨🏻‍💻
+## 👨🏻‍💻 Adding Env Variables to Setup Script 👩🏻‍💻
 
 🚨 At this point, you'll need to edit the `scripts/set_env_vars.sh` script in an editor of your choice 🚨
 
@@ -69,7 +69,7 @@ export SLACK_DISCOVERY_SDK_TEST_USER_AUDIT_TOKEN='xoxp-*************'
 chmod +x scripts/set_env_vars.sh
 ```
 
-## 👨🏻‍💻 Run the Setup Script 👨🏻‍💻
+## 👩🏻‍💻 Run the Setup Script 👨🏻‍💻
 Use the following command to run the script:
 
 > Note: you must use the `source` command so that the env variables are set properly.
@@ -109,22 +109,45 @@ You should see a response similar to the following (note the result below has be
 DEBUG:slack_discovery_sdk.base_client:Rate limit metrics: DEBUG:slack_discovery_sdk.base_client:Received the following response - status: 200, headers: {'date': 'Wed, 13 Oct 2021 22:09:57 GMT',..., body: {"ok":true,"enterprise":{"id":"T027****D2R","name":"Enterprise-****-Sandbox","domain":"test-****","email_domain":"","icon":...,"image_default":true},"is_verified":false,"teams":[{"id":"****","name":"Enterprise-****-Sandbox","domain":"test-****","email_domain":"","icon":{"image_102":"https:\/\/a...avatars-teams\/ava_0021-88.png","image_default":true},"is_verified":false,"enterprise_id":"E**","is_enterprise":0,"created":1625594757,"archived":false,"deleted":false,"discoverable":"unlisted"}]}}
 ```
 
-There are various other scripts in the `slack_discovery_sdk/examples` folder, with each script serving to solve a different use case. Below you can find some basic information about each script:
+If you want to run all of the examples at once, you can use the `run_all.sh` script.
+
+> Note: before you can run this script, you will need to mark the file as executable with the following command:
+
+```bash
+chmod +x scripts/run_all.sh
+```
+
+Then, run the script:
+
+```
+./scripts/run_all.sh
+```
+
+This will run all of the examples in the `slack_discovery_sdk/examples` folder, and 
+you should see debug output in your terminal once the script has finished running.
+
+Continue reading below to learn what each example does:
 
 💳 <b>`DLP_call_pattern.py`</b> 💳
 * This script involves using the tombstoning capabilities of the Discovery SDK to check for messages that contain sensitive information. If sensitive information is detected by our script (for example a credit card number), the message is tombstoned, and the user is notified that their message is being reviewed.
 * Once you run this script, you should see that one of your 
 messages in the channel which you set in your env variable (SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID) should have been tombstoned. The message should now say `This message is being scanned to make sure it complies with your team’s data security policies.`
 
-🙋🏾‍♀️ <b>`user_based_eDiscovery_pattern.py`</b> 👩🏻‍🏫
+🙋🏾‍♀️ <b>`user_based_eDiscovery_with_edits.py`</b> 👩🏻‍🏫
 * This script retrieves all of the conversations (channels) and messages a particular user is in. It then outputs those 
-conversations to a file, and stores them in the following format: `YYYY/MM/DD/user_id/channel_id/discovery_conversations_history.json`. 
+conversations to a file, and stores them in the following format: `YYYY/MM/DD/user_id/channel_id/discovery_conversations.json`. If the `has_edits` flag is true 
+for a certain conversation, all edited messages will be found in the `edits` field. 
+
 
 👩🏻‍🏫 <b>`audit_logs_pattern.py`</b> 👩🏻‍🏫
 * This script will use the [Audit Logs API](https://api.slack.com/admins/audit-logs) to find all of the
 channels that a particular user has created. As is the 
 case with the `user_based_eDiscovery` script, it will only
-be useful if you have a paricular user which you want to see details about. This script will output the channel creation events associated with a particular user_id to in the following format: `YYYY/MM/DD/user_id/audit_logs/public_channel_created.json`. 
+be useful if you have a paricular user which you want to see details about. This script will output the channel creation events associated with a particular user_id to in the following format: `YYYY/MM/DD/user_id/audit_logs/public_channel_created.json`.
+
+🙋🏾‍♀️ <b>`user_based_eDiscovery_pattern.py` (Without Edits) </b> 👩🏻‍🏫
+* This is the same as the `user_based_eDiscovery_with_edits.py` script, except it 
+doesn't capture edits. 
 
 ## Considerations
 The SDK and examples are to aid in your development process. Please feel free to use this as a learning exercise, and to build on top of these examples, but the examples shown above are by no means a complete solution. 
