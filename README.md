@@ -1,9 +1,8 @@
 # Python-Slack-Discovery-SDK
 
-👋🏼 Welcome to the Python-Slack-Discovery-SDK! This project aims to make using the [Slack Discovery API's](https://api.slack.com/enterprise/discovery/methods#methods) easier.
+👋🏼 Welcome to the Python-Slack-Discovery-SDK! This project aims to make using the Slack Discovery APIs easier.
 
 > 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). 🚨
-
 
 # Using the SDK
 
@@ -14,7 +13,7 @@ Below are the steps needed to use the Discovery SDK.
 In order to speed up the development process, we've provided you with a script called 
 `set_env_vars.sh` in the scripts folder to automate a few things needed to run the SDK. 
 The script accomplishes the following things using the following code:
-* Prints your current Python version (<b>you will need Python version 3.6 or greater for this SDK</b>) 
+* Prints your current Python version (**you will need Python version 3.6 or greater for this SDK**) 
   ```bash
   python3 --version
   ```
@@ -37,7 +36,7 @@ The script accomplishes the following things using the following code:
 🚨 At this point, you'll need to edit the `scripts/set_env_vars.sh` script in an editor of your choice 🚨
 
 Edit the line below, and add in your token with `discovery:read` and `discovery:write` scopes.
-```
+```bash
 export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN='xoxp-**********'
 ```
 
@@ -46,7 +45,7 @@ a few other additional environmental variables.
 
 Edit the lines below, and add in the appropriate tokens:
 
-```
+```bash
 # A normal bot token with many scopes
 export SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN = "xoxb-*******"
 
@@ -119,7 +118,7 @@ chmod +x scripts/run_all.sh
 
 Then, run the script:
 
-```
+```bash
 ./scripts/run_all.sh
 ```
 
@@ -128,24 +127,23 @@ you should see debug output in your terminal once the script has finished runnin
 
 Continue reading below to learn what each example does:
 
-💳 <b>`DLP_call_pattern.py`</b> 💳
+💳 **`DLP_call_pattern.py`** 💳
 * This script involves using the tombstoning capabilities of the Discovery SDK to check for messages that contain sensitive information. If sensitive information is detected by our script (for example a credit card number), the message is tombstoned, and the user is notified that their message is being reviewed.
 * Once you run this script, you should see that one of your 
 messages in the channel which you set in your env variable (SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID) should have been tombstoned. The message should now say `This message is being scanned to make sure it complies with your team’s data security policies.`
 
-🙋🏾‍♀️ <b>`user_based_eDiscovery_with_edits.py`</b> 👩🏻‍🏫
+🙋🏾‍♀️ **`user_based_eDiscovery_with_edits.py`** 👩🏻‍🏫
 * This script retrieves all of the conversations (channels) and messages a particular user is in. It then outputs those 
 conversations to a file, and stores them in the following format: `YYYY/MM/DD/user_id/channel_id/discovery_conversations.json`. If the `has_edits` flag is true 
-for a certain conversation, all edited messages will be found in the `edits` field. 
+for a certain conversation, all edited messages will be found in the `edits` field.
 
-
-👩🏻‍🏫 <b>`audit_logs_pattern.py`</b> 👩🏻‍🏫
+👩🏻‍🏫 **`audit_logs_pattern.py`** 👩🏻‍🏫
 * This script will use the [Audit Logs API](https://api.slack.com/admins/audit-logs) to find all of the
 channels that a particular user has created. As is the 
 case with the `user_based_eDiscovery` script, it will only
 be useful if you have a paricular user which you want to see details about. This script will output the channel creation events associated with a particular user_id to in the following format: `YYYY/MM/DD/user_id/audit_logs/public_channel_created.json`.
 
-🙋🏾‍♀️ <b>`user_based_eDiscovery_pattern.py` (Without Edits) </b> 👩🏻‍🏫
+🙋🏾‍♀️ **`user_based_eDiscovery_pattern.py` (Without Edits) ** 👩🏻‍🏫
 * This is the same as the `user_based_eDiscovery_with_edits.py` script, except it 
 doesn't capture edits. 
 
