@@ -143,7 +143,7 @@ channels that a particular user has created. As is the
 case with the `user_based_eDiscovery` script, it will only
 be useful if you have a paricular user which you want to see details about. This script will output the channel creation events associated with a particular user_id to in the following format: `YYYY/MM/DD/user_id/audit_logs/public_channel_created.json`.
 
-🙋🏾‍♀️ **`user_based_eDiscovery_pattern.py` (Without Edits) ** 👩🏻‍🏫
+🙋🏾‍♀️ **`user_based_eDiscovery_pattern.py`** (Without Edits)  👩🏻‍🏫
 * This is the same as the `user_based_eDiscovery_with_edits.py` script, except it 
 doesn't capture edits. 
 
@@ -212,3 +212,10 @@ pytest tests/
 
 # You can check logs/pytest.log for trouble shooting
 ```
+
+## Feedback
+
+For feedback, please use [this feedback form](https://docs.google.com/forms/d/e/1FAIpQLSdlwh4OMDIlpdePvIInhyT02xI1xX_6BDE7OHOX4BcyHWQkhg/viewform?usp=sf_link). 
+
+## Issues and Troubleshooting
+For issues, please use [this issue form](https://forms.gle/jHS17eYEYAtcXA96A).
