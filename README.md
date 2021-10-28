@@ -6,7 +6,7 @@
 
 # Using the SDK
 
-Below are the steps needed to use the Discovery SDK.
+First, you must download the SDK. Please go to the [Releases section](https://github.com/slackapi/python-slack-discovery-sdk/releases). Go ahead and find the latest stable release, and click on the Assets tab to unfurl the assets. Go ahead and download the Source code (either in tar.gz or zip). Go to your Downloads folder, and unzip the source code. Next, open the source code in an editor of your choice, and proceed to the following steps to install the required dependencies.
 
 # 👨🏻‍💻 Understanding the Setup Script 👩🏻‍💻
 
