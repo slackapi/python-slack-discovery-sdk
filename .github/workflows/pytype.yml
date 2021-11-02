@@ -1,4 +1,4 @@
-name: Slack Discovery SDK pytype validation
+name: Type hint validation using pytype
 
 on:
   push:
