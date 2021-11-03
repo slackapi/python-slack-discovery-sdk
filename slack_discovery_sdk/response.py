@@ -43,7 +43,7 @@ class DiscoveryResponse:
     def __init__(  # type: ignore
         self,
         *,
-        client: "BaseDiscoveryClient",
+        client: "BaseDiscoveryClient",  # noqa: F821
         http_method: str,
         api_url: str,
         request_headers: dict,

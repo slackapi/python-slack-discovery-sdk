@@ -4,9 +4,9 @@ import datetime, os, re, shutil
 
 FILE_EXTENSION = ".json"
 
-## This file contains functions which will help create a directory structure to organize and
-## hold the output from the discovery APIs. This is just meant as a helper to get you started,
-## and is by no means a production ready solution. Use this to get familiar with the discovery APIs.
+# This file contains functions which will help create a directory structure to organize and
+# hold the output from the discovery APIs. This is just meant as a helper to get you started,
+# and is by no means a production ready solution. Use this to get familiar with the discovery APIs.
 
 
 def export_json_to_file(
@@ -27,7 +27,7 @@ def export_json_to_file(
     Returns:
         None
     """
-    if channel_id != None:
+    if channel_id is not None:
         channel_folder = create_folder_for_channel(
             base_dir=base_dir,
             channel_id=channel_id,
