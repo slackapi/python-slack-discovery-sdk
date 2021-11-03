@@ -1,0 +1,3 @@
+(To the project maintainers, you can remove the following and write the description of this pull request)
+
+> 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). For feedback, please use [this feedback form](https://forms.gle/B2PRF9HQheRgQdo7A). 🚨
