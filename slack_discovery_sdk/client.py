@@ -154,7 +154,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "limit": limit,
             }
         )
-        if offset != None:
+        if offset is not None:
             kwargs.update({"offset": offset})
 
         return self.api_call(

@@ -61,7 +61,7 @@ class DiscoveryOAuthApp:
                             body=self._build_html_page(main),
                             headers={"Content-Type": ["text/html; charset=utf-8"]},
                         )
-                    except Exception as _:
+                    except Exception:
                         _logger.exception("Failed to perform oauth.v2.access API call")
                         main = f"""
                         <p>Click <a href="{_install_path}">here</a> to install the app again.</p>

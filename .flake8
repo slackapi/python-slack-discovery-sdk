@@ -1,0 +1,5 @@
+[flake8]
+max-line-length = 125
+# E401: We are fine with multiple imports in a line
+# W503: This rule is not compatible with black (code formatter)
+ignore = E401,W503
