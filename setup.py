@@ -15,9 +15,9 @@ with open(f"{here}/README.md", "r") as fh:
 
 test_dependencies = [
     "slack_sdk>=3.11,<4",
-    "pytest>=5,<6",
-    "pytest-cov>=2,<3",
-    "black==21.9b0",
+    "pytest>=6,<7",
+    "pytest-cov>=3,<4",
+    "black==21.10b0",
 ]
 
 setuptools.setup(

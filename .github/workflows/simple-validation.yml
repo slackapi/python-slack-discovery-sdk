@@ -1,4 +1,4 @@
-name: Slack Discovery SDK code validation
+name: Code validation
 
 on:
   push:
