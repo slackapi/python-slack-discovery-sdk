@@ -6,20 +6,20 @@
 
 # Using the SDK 
 
-Use pip to install the sdk.
+Use pip to install the SDK.
 
 ```bash
 pip install slack-discovery-sdk==1.1.0
 ```
 
-Once you've installed the sdk, you can use the following import statement 
-to use the methods in the sdk. 
+Once you've installed the SDK, you can use the following import statement 
+to use the methods in the SDK. 
 
 ```python
 from slack_discovery_sdk import DiscoveryClient
 ```
 
-To initialize the sdk, you must pass in a token with Discovery Scopes:
+To initialize the SDK, you must pass in a token with Discovery Scopes:
 
 > Note: use the following command to set your environmental variable
 
