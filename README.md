@@ -9,7 +9,7 @@
 Use pip to install the SDK.
 
 ```bash
-pip install slack-discovery-sdk==1.1.0
+pip install slack-discovery-sdk
 ```
 
 Once you've installed the SDK, you can use the following import statement 
@@ -39,6 +39,9 @@ Here is an example of calling the `enterprise_info` endpoint, and printing the r
 enterprise_info = client.discovery_enterprise_info()
 print(enterprise_info)
 ```
+
+To view the full code, of using the `enterprise_info` endpoint, please see the sample 
+[`app.py` file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/app.py).
 
 To view all of the methods offered by the SDK, please see the [client.py file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/slack_discovery_sdk/client.py).
 
