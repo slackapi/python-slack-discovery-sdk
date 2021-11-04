@@ -4,7 +4,7 @@
 
 > 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). 🚨
 
-# Using the SDK 
+# Using the SDK
 
 Use pip to install the SDK.
 
@@ -41,7 +41,7 @@ enterprise_info = client.discovery_enterprise_info()
 print(enterprise_info.body)
 ```
 
-To view the full code, of using the `enterprise_info` endpoint, please see the sample 
+To view the full code using the `discovery.enterprise.info` endpoint, please see the sample 
 [`app.py` file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/app.py).
 
 To view all of the methods offered by the SDK, please see the [client.py file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/slack_discovery_sdk/client.py).
