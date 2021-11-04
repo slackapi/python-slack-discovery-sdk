@@ -27,17 +27,18 @@ export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN="your-discovery-token-goes-here
 To initialize the SDK, you must pass in a token with Discovery Scopes:
 
 ```python
+import os
 enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
 client = DiscoveryClient(token=enterprise_token)
 ```
 > Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
 
 Now, you can use the client to call all of the Slack Discovery SDK methods. 
-Here is an example of calling the `enterprise_info` endpoint, and printing the result to the console:
+Here is an example of calling the `discovery.enterprise.info` endpoint, and printing the result to the console:
 
 ```python
 enterprise_info = client.discovery_enterprise_info()
-print(enterprise_info)
+print(enterprise_info.body)
 ```
 
 To view the full code, of using the `enterprise_info` endpoint, please see the sample 
