@@ -19,17 +19,15 @@ to use the methods in the SDK.
 from slack_discovery_sdk import DiscoveryClient
 ```
 
-To initialize the SDK, you must pass in a token with Discovery Scopes:
-
-> Note: use the following command to set your environmental variable
+> Note: use the following command to set your environmental variable to be your token with discovery scopes.
 
 ```bash
 export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN="your-discovery-token-goes-here"
 ```
+To initialize the SDK, you must pass in a token with Discovery Scopes:
 
 ```python
 enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
-
 client = DiscoveryClient(token=enterprise_token)
 ```
 > Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
