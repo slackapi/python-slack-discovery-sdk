@@ -4,9 +4,45 @@
 
 > 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). 🚨
 
-# Using the SDK
+# Using the SDK 
 
-First, you must download the SDK. Please go to the [Releases section](https://github.com/slackapi/python-slack-discovery-sdk/releases). Go ahead and find the latest stable release, and click on the Assets tab to unfurl the assets. Go ahead and download the Source code (either in tar.gz or zip). Go to your Downloads folder, and unzip the source code. Next, open the source code in an editor of your choice, and proceed to the following steps to install the required dependencies.
+Use pip to install the sdk.
+
+```bash
+pip install slack-discovery-sdk==1.1.0
+```
+
+Once you've installed the sdk, you can use the following import statement 
+to use the methods in the sdk. 
+
+```python
+from slack_discovery_sdk import DiscoveryClient
+```
+
+To initialize the sdk, you must pass in a token with Discovery Scopes:
+
+> Note: use the following command to set your environmental variable
+
+```bash
+export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN="your-discovery-token-goes-here"
+```
+
+```python
+enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
+
+client = DiscoveryClient(token=enterprise_token)
+```
+> Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
+
+Now, you can use the client to call all of the Slack Discovery SDK methods. 
+Here is an example of calling the `enterprise_info` endpoint, and printing the result to the console:
+
+```python
+enterprise_info = client.discovery_enterprise_info()
+print(enterprise_info)
+```
+
+To view all of the methods offered by the SDK, please see the [client.py file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/slack_discovery_sdk/client.py).
 
 # 👨🏻‍💻 Understanding the Setup Script 👩🏻‍💻
 
