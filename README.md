@@ -6,7 +6,45 @@
 
 # Using the SDK
 
-First, you must download the SDK. Please go to the [Releases section](https://github.com/slackapi/python-slack-discovery-sdk/releases). Go ahead and find the latest stable release, and click on the Assets tab to unfurl the assets. Go ahead and download the Source code (either in tar.gz or zip). Go to your Downloads folder, and unzip the source code. Next, open the source code in an editor of your choice, and proceed to the following steps to install the required dependencies.
+Use pip to install the SDK.
+
+```bash
+pip install slack-discovery-sdk
+```
+
+Once you've installed the SDK, you can use the following import statement 
+to use the methods in the SDK. 
+
+```python
+from slack_discovery_sdk import DiscoveryClient
+```
+
+> Note: use the following command to set your environmental variable to be your token with discovery scopes.
+
+```bash
+export SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN="your-discovery-token-goes-here"
+```
+To initialize the SDK, you must pass in a token with Discovery Scopes:
+
+```python
+import os
+enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
+client = DiscoveryClient(token=enterprise_token)
+```
+> Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
+
+Now, you can use the client to call all of the Slack Discovery SDK methods. 
+Here is an example of calling the `discovery.enterprise.info` endpoint, and printing the result to the console:
+
+```python
+enterprise_info = client.discovery_enterprise_info()
+print(enterprise_info.body)
+```
+
+To view the full code using the `discovery.enterprise.info` endpoint, please see the sample 
+[`app.py` file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/app.py).
+
+To view all of the methods offered by the SDK, please see the [client.py file](https://github.com/slackapi/python-slack-discovery-sdk/blob/main/slack_discovery_sdk/client.py).
 
 # 👨🏻‍💻 Understanding the Setup Script 👩🏻‍💻
 

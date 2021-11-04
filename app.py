@@ -5,14 +5,11 @@ from slack_discovery_sdk import DiscoveryClient
 
 logging.basicConfig(level=logging.DEBUG)
 
-enterprise_token = os.environ["SLACK_ENTERPRISE_TOKEN"]
-
-# The Bot Token is optional, some customers may not have one
-# slack_token = os.environ["SLACK_BOT_TOKEN"]
+enterprise_token = os.environ["SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN"]
 
 client = DiscoveryClient(token=enterprise_token)
 enterprise_info = client.discovery_enterprise_info()
-print(enterprise_info)
+print(enterprise_info.body)
 
 # EXAMPLE USAGE BELOW
 
