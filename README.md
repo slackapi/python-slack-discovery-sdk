@@ -1,9 +1,11 @@
 # Python-Slack-Discovery-SDK
 
+[![pypi package][pypi-image]][pypi-url]
+[![Python Version][python-version]][pypi-url]
+
 👋🏼 Welcome to the Python-Slack-Discovery-SDK! This project aims to make using the Slack Discovery APIs easier.
 
 > 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). 🚨
-
 
 ## Prerequisites For Using the SDK
 * Python version 3.6 or greater
@@ -264,3 +266,8 @@ For feedback, please use [this feedback form](https://forms.gle/B2PRF9HQheRgQdo7
 
 ## Issues and Troubleshooting
 For issues, please use [this issue form](https://forms.gle/jHS17eYEYAtcXA96A).
+
+
+[pypi-image]: https://badge.fury.io/py/slack-discovery-sdk.svg
+[pypi-url]: https://pypi.org/project/slack-discovery-sdk/
+[python-version]: https://img.shields.io/pypi/pyversions/slack-discovery-sdk.svg
