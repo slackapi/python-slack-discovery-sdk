@@ -4,7 +4,14 @@
 
 > 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). 🚨
 
-# Using the SDK
+
+## Prerequisites For Using the SDK
+* Python version 3.6 or greater
+* Latest version of pip
+* A token with discovery scopes (`discovery:read` and or `discovery:write`)
+  > Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
+
+## Using the SDK
 
 Use pip to install the SDK.
 
