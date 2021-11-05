@@ -8,7 +8,7 @@
 ## Prerequisites For Using the SDK
 * Python version 3.6 or greater
 * Latest version of pip
-* A token with discovery scopes (discovery:read and or discovery:write)
+* A token with discovery scopes (`discovery:read` and or `discovery:write`)
   > Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
 
 ## Using the SDK
