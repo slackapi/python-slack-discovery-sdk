@@ -1,10 +1,9 @@
-name: Code validation
+name: Sytanx check using py_compile
 
 on:
   push:
     branches: [ main ]
   pull_request:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -29,6 +28,3 @@ jobs:
       run: |
         find tests -name '*.py' | xargs python -m py_compile
 
-# TODO:
-# - enable flake8
-# - enable pytest
