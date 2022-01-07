@@ -23,7 +23,7 @@ jobs:
         pip install -U pip
         pip install -e ".[testing]"
         # As pytype can change its behavior in newer versions, we manually upgrade it
-        pip install "pytype==2021.10.11"
+        pip install "pytype==2022.1.5"
     - name: Run pytype
       run: |
         pytype slack_discovery_sdk/
