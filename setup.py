@@ -17,7 +17,7 @@ test_dependencies = [
     "slack_sdk>=3.11,<4",
     "pytest>=6,<7",
     "pytest-cov>=3,<4",
-    "black==21.10b0",
+    "black==22.1.0",
 ]
 
 setuptools.setup(
