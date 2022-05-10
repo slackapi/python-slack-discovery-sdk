@@ -100,7 +100,7 @@ class DiscoveryOAuthApp:
                 for k, vs in headers.items():
                     for v in vs:
                         self.send_header(k, v)
-                self.send_header("Content-Length", len(body_bytes))
+                self.send_header("Content-Length", str(len(body_bytes)))
                 self.end_headers()
                 self.wfile.write(body_bytes)
 
