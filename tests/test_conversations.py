@@ -1,7 +1,7 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 from typing import Any
 
-import os, pytest, time
+import os, pytest, time, json
 from slack_sdk import WebClient
 from slack_discovery_sdk import DiscoveryClient
 from slack_discovery_sdk.internal_utils import (
@@ -90,6 +90,21 @@ class TestConversations:
             if page_num > 5:
                 break
         assert len(conversations) > limit_size
+
+    def test_conversations_history_pagination(self):
+        conversations = []
+        limit_size = 1
+        page_num = 0
+        for page in self.client.discovery_conversations_history(channel=self.channel, team=self.team, limit=limit_size):
+            for message in page['messages']:
+                conversations.append(json.dumps(message))
+            page_num += 1
+            if page_num > 5:
+                break
+
+        assert len(conversations) > limit_size
+        # ensure we are getting different messages for each page
+        assert sorted(set(conversations)) == sorted(conversations)
 
     def test_conversations_history_from_one_minute_ago(self):
         test_text = "This first message will be used to test getting conversation history from the last minute"

@@ -9,6 +9,14 @@ from .errors import DiscoveryApiError  # type:ignore
 from .internal_utils import _next_cursor_is_present  # type:ignore
 
 
+_LATEST_OFFSET_APIS = [
+    'discovery.conversations.history',
+    'discovery.conversations.edits',
+    'discovery.conversations.renames',
+    'discovery.conversations.reactions',
+]
+
+
 class DiscoveryResponse:
     """An iterable container of response data.
     Attributes:
@@ -119,6 +127,9 @@ class DiscoveryResponse:
             params.update({"cursor": next_cursor})
             # offset for https://api.slack.com/enterprise/discovery/methods#users_list etc.
             params.update({"offset": self.body.get("offset")})
+
+            if any([latest_offset_api in self.api_url for latest_offset_api in _LATEST_OFFSET_APIS]):
+                params.update({"latest": self.body.get("offset")})
 
             response = self._client.fetch_next_page(  # skipcq: PYL-W0212
                 http_method=self.http_method,
