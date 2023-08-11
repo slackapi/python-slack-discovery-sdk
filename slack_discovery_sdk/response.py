@@ -14,6 +14,7 @@ _LATEST_OFFSET_APIS = [
     'discovery.conversations.edits',
     'discovery.conversations.renames',
     'discovery.conversations.reactions',
+    'discovery.conversations.recent',
 ]
 
 
