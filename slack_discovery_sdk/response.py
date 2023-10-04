@@ -10,11 +10,11 @@ from .internal_utils import _next_cursor_is_present  # type:ignore
 
 
 _LATEST_OFFSET_APIS = [
-    'discovery.conversations.history',
-    'discovery.conversations.edits',
-    'discovery.conversations.renames',
-    'discovery.conversations.reactions',
-    'discovery.conversations.recent',
+    "discovery.conversations.history",
+    "discovery.conversations.edits",
+    "discovery.conversations.renames",
+    "discovery.conversations.reactions",
+    "discovery.conversations.recent",
 ]
 
 
@@ -129,7 +129,12 @@ class DiscoveryResponse:
             # offset for https://api.slack.com/enterprise/discovery/methods#users_list etc.
             params.update({"offset": self.body.get("offset")})
 
-            if any([latest_offset_api in self.api_url for latest_offset_api in _LATEST_OFFSET_APIS]):
+            if any(
+                [
+                    latest_offset_api in self.api_url
+                    for latest_offset_api in _LATEST_OFFSET_APIS
+                ]
+            ):
                 params.update({"latest": self.body.get("offset")})
 
             response = self._client.fetch_next_page(  # skipcq: PYL-W0212

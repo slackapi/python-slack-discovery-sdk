@@ -39,7 +39,6 @@ for conversation in last_24_hour_conversations["channels"]:
     )
 
     for message in channel_conversation["messages"]:
-
         # Step 3 - check each message and see if it contains a credit card number. If it does, tombstone the message.
         # A valid credit card for our logic is something like the following: '5122-2368-7954-3214'
         # Please note this is just example logic, to help you understand how to use the Discovery APIs.

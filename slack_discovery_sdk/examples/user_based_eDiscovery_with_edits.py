@@ -32,7 +32,6 @@ user_id = auth_test["user_id"]
 list_of_conversations = client.discovery_user_conversations(user=user_id, limit=500)
 
 for conversation in list_of_conversations["channels"]:
-
     channel_id = conversation["id"]
     team_id = conversation["team_id"]
 

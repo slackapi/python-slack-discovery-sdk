@@ -95,8 +95,10 @@ class TestConversations:
         conversations = []
         limit_size = 1
         page_num = 0
-        for page in self.client.discovery_conversations_history(channel=self.channel, team=self.team, limit=limit_size):
-            for message in page['messages']:
+        for page in self.client.discovery_conversations_history(
+            channel=self.channel, team=self.team, limit=limit_size
+        ):
+            for message in page["messages"]:
                 conversations.append(json.dumps(message))
             page_num += 1
             if page_num > 5:
