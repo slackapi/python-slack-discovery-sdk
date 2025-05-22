@@ -7,16 +7,16 @@ on:
   pull_request:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     strategy:
       matrix:
         python-version:
-          - "3.11"
-          - "3.10"
-          - "3.9"
-          - "3.8"
           - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
     permissions:
       contents: read
     steps:
