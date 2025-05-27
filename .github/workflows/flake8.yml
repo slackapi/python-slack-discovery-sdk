@@ -2,7 +2,8 @@ name: Lint validation using flake8
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -11,19 +12,24 @@ jobs:
     timeout-minutes: 5
     strategy:
       matrix:
-        python-version: ['3.9']
+        python-version:
+          - "3.9"
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        pip install -U pip
-        pip install -e ".[testing]"
-        # We manually upgrade it to make the builds stable
-        pip install "flake8==6.1.0"
-    - name: Run flake8
-      run: |
-        flake8 slack_discovery_sdk/
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        with:
+          persist-credentials: false
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@e9aba2c848f5ebd159c070c61ea2c4e2b122355e # v2.3.4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip
+          pip install -e ".[testing]"
+          # We manually upgrade it to make the builds stable
+          pip install "flake8==6.1.0"
+      - name: Run flake8
+        run: |
+          flake8 slack_discovery_sdk/

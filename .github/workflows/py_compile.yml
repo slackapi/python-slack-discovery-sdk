@@ -2,29 +2,38 @@ name: Sytanx check using py_compile
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 5
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version:
+          - "3.7"
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+    permissions:
+      contents: read
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        pip install -U pip
-        pip install -e ".[testing]"
-    - name: Run py_compile for main code
-      run: |
-        find slack_discovery_sdk -name '*.py' | xargs python -m py_compile
-    - name: Run py_compile for test code
-      run: |
-        find tests -name '*.py' | xargs python -m py_compile
-
+      - uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
+        with:
+          persist-credentials: false
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@e9aba2c848f5ebd159c070c61ea2c4e2b122355e # v2.3.4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -U pip
+          pip install -e ".[testing]"
+      - name: Run py_compile for main code
+        run: |
+          find slack_discovery_sdk -name '*.py' | xargs python -m py_compile
+      - name: Run py_compile for test code
+        run: |
+          find tests -name '*.py' | xargs python -m py_compile
