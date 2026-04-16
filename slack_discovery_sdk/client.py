@@ -348,7 +348,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         private: Optional[bool] = None,
         **kwargs,
     ) -> DiscoveryResponse:
-        """You can use this endpoint to gather all channel renames that have occured for an org,
+        """You can use this endpoint to gather all channel renames that have occurred for an org,
         without having to call the discovery.conversations.info endpoint for each channel.
         Refer to https://api.slack.com/enterprise/discovery/methods#conversations_renames for more details.
         """
