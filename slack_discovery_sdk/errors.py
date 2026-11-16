@@ -1,10 +1,10 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
-"""Errors that can be raised by this SDK"""
+"""Errors that can be raised by this SDK."""
 
 
 class DiscoveryClientError(Exception):
-    """Base class for Client errors"""
+    """Base class for Client errors."""
 
 
 class DiscoveryRequestError(DiscoveryClientError):

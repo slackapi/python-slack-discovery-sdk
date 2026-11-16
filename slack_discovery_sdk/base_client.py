@@ -157,7 +157,8 @@ class BaseDiscoveryClient:
         headers: Dict[str, str],
         params: Dict[str, str],
     ) -> Dict[str, any]:  # type:ignore
-        """This method is supposed to be used only for DiscoveryResponse pagination
+        """This method is supposed to be used only for DiscoveryResponse pagination.
+
         You can paginate using Python's for iterator as below:
           for response in client.conversations_list(limit=100):
               # do something with each response here
@@ -187,6 +188,7 @@ class BaseDiscoveryClient:
 
         Args:
             token: Slack API Token (either bot token or user token)
+            http_method: HTTP method (e.g., POST)
             url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
             params: Form body params
             additional_headers: Request headers to append
@@ -237,10 +239,10 @@ class BaseDiscoveryClient:
         """Performs an HTTP request and parses the response.
 
         Args:
+            http_method: HTTP method (e.g., POST)
             url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
-            args: args has "headers" and "params"
-                "headers": Dict[str, str]
-                "params": Dict[str, str],
+            headers: Request headers
+            params: Form body params
 
         Returns:
             dict {status: int, headers: Headers, body: str}

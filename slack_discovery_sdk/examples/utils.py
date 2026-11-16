@@ -20,11 +20,13 @@ def export_json_to_file(
     user_id: str,
 ):
     """This method is used to save data from the eDiscovery, DLP, and SIEM call patterns.
+
     This is just for example use, to make our partners and customers life easier. This is
     not meant to be a production implementation by any means.
 
     Args:
         new_items: this is the JSON response from the discovery APIs that we want to save.
+        base_dir: the folder where the output is written
         logs_type: this is the discovery API method used
         channel_id: channel_id i.e C02449123
         user_id: The ID of the user i.e. U09123411
@@ -49,8 +51,9 @@ def create_folder_for_channel(
     channel_id: str,
     user_id: str,
 ) -> str:
-    """This method will create a folder to keep all output from the discovery calls
-    organized. It will create a folder based on channelID for a particular user: for example C02642201.
+    """This method will create a folder to keep all output from the discovery calls organized.
+
+    It will create a folder based on channelID for a particular user: for example C02642201.
 
     Args:
         base_dir: base directory

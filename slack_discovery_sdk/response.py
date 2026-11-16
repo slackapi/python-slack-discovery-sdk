@@ -98,6 +98,7 @@ class DiscoveryResponse:
 
     def __iter__(self):
         """Enables the ability to iterate over the response.
+
         It's required for the iterator protocol.
 
         Note:

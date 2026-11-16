@@ -13,6 +13,7 @@ from .version import __version__  # type:ignore
 
 def convert_bool_to_0_or_1(params: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     """Converts all bool values in dict to "0" or "1".
+
     Slack APIs safely accept "0"/"1" as boolean values.
     Using True/False (bool in Python) doesn't work with aiohttp.
     This method converts only the bool values in top-level of a given dict.
@@ -28,8 +29,7 @@ def convert_bool_to_0_or_1(params: Optional[Dict[str, Any]]) -> Optional[Dict[st
 
 
 def get_user_agent(prefix: Optional[str] = None, suffix: Optional[str] = None):
-    """Construct the user-agent header with the package info,
-    Python version and OS version.
+    """Construct the user-agent header with the package info, Python version and OS version.
 
     Returns:
         The user agent string.
@@ -59,8 +59,7 @@ def _get_url(base_url: str, api_method: str) -> str:
 
 
 def _next_cursor_is_present(data) -> bool:
-    """Determine if the response contains 'next_cursor'
-    and 'next_cursor' is not empty.
+    """Determine if the response contains 'next_cursor' and 'next_cursor' is not empty.
 
     Returns:
         A boolean value.

@@ -1,6 +1,6 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
-"""Internal module for loading proxy-related env variables"""
+"""Internal module for loading proxy-related env variables."""
 
 import logging
 import os
