@@ -1,6 +1,7 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
 """A Python module for interacting with Slack's Discovery APIs."""
+
 from typing import Optional, Union
 
 from .base_client import BaseDiscoveryClient  # type:ignore
@@ -78,9 +79,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "include_deleted": include_deleted,
             }
         )
-        return self.api_call(
-            "discovery.enterprise.info", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.enterprise.info", http_method="GET", params=kwargs)
 
     # ------------------------------------------------
     # discovery.users
@@ -157,9 +156,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         if offset is not None:
             kwargs.update({"offset": offset})
 
-        return self.api_call(
-            "discovery.user.conversations", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.user.conversations", http_method="GET", params=kwargs)
 
     # ------------------------------------------------
     # discovery.conversations
@@ -182,9 +179,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         Refer to https://api.slack.com/enterprise/discovery/methods#conversations_recent for more details.
         """
         kwargs.update({"token": token, "team": team, "latest": latest, "limit": limit})
-        return self.api_call(
-            "discovery.conversations.recent", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.recent", http_method="GET", params=kwargs)
 
     def discovery_conversations_list(
         self,
@@ -217,9 +212,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "limit": limit,
             }
         )
-        return self.api_call(
-            "discovery.conversations.list", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.list", http_method="GET", params=kwargs)
 
     def discovery_conversations_history(
         self,
@@ -240,9 +233,7 @@ class DiscoveryClient(BaseDiscoveryClient):
             if isinstance(reactions, (int, str)):
                 reactions = int(reactions) == 1
             if not isinstance(reactions, bool):
-                raise DiscoveryRequestError(
-                    f"Unexpected value type for reactions {type(reactions).__name__}"
-                )
+                raise DiscoveryRequestError(f"Unexpected value type for reactions {type(reactions).__name__}")
         kwargs.update(
             {
                 "token": token,
@@ -254,9 +245,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "limit": limit,
             }
         )
-        return self.api_call(
-            "discovery.conversations.history", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.history", http_method="GET", params=kwargs)
 
     def discovery_conversations_edits(
         self,
@@ -282,9 +271,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "limit": limit,
             }
         )
-        return self.api_call(
-            "discovery.conversations.edits", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.edits", http_method="GET", params=kwargs)
 
     def discovery_conversations_info(
         self,
@@ -306,9 +293,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "offset": offset,
             }
         )
-        return self.api_call(
-            "discovery.conversations.info", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.info", http_method="GET", params=kwargs)
 
     def discovery_conversations_members(
         self,
@@ -334,9 +319,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "limit": limit,
             }
         )
-        return self.api_call(
-            "discovery.conversations.members", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.members", http_method="GET", params=kwargs)
 
     def discovery_conversations_renames(
         self,
@@ -361,9 +344,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "private": private,
             }
         )
-        return self.api_call(
-            "discovery.conversations.renames", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.renames", http_method="GET", params=kwargs)
 
     def discovery_conversations_reactions(
         self,
@@ -389,9 +370,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "limit": limit,
             }
         )
-        return self.api_call(
-            "discovery.conversations.reactions", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.reactions", http_method="GET", params=kwargs)
 
     def discovery_conversations_search(
         self,
@@ -422,9 +401,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "offset": offset,
             }
         )
-        return self.api_call(
-            "discovery.conversations.search", http_method="GET", params=kwargs
-        )
+        return self.api_call("discovery.conversations.search", http_method="GET", params=kwargs)
 
     # ------------------------------------------------
     # discovery.chat
@@ -443,7 +420,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         this method returns the current, edited (or deleted) message.
         Refer to https://api.slack.com/enterprise/discovery/methods#chat_info for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -469,7 +445,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         should be included in place of the message.
         Refer to https://api.slack.com/enterprise/discovery/methods#chat_update for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -494,7 +469,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         """Deletes a message. This method purges the history, edits, and message from the Slack databases.
         Refer to https://api.slack.com/enterprise/discovery/methods#chat_delete for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -518,7 +492,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         """Use this method to update and or obscure a message in the event that the message violated policy.
         Refer to https://api.slack.com/enterprise/discovery/methods#chat_tombstone for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -528,9 +501,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "content": content,
             }
         )
-        return self.api_call(
-            "discovery.chat.tombstone", http_method="POST", params=kwargs
-        )
+        return self.api_call("discovery.chat.tombstone", http_method="POST", params=kwargs)
 
     def discovery_chat_restore(
         self,
@@ -544,7 +515,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         """Use this method to restore a tombstoned message to the client.
         Refer to https://api.slack.com/enterprise/discovery/methods#chat_restore for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -553,9 +523,7 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "team": team,
             }
         )
-        return self.api_call(
-            "discovery.chat.restore", http_method="POST", params=kwargs
-        )
+        return self.api_call("discovery.chat.restore", http_method="POST", params=kwargs)
 
     # ------------------------------------------------
     # discovery.draft
@@ -575,7 +543,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         """The discovery.drafts.list method returns a list of drafts created upon the specified team.
         Refer to https://api.slack.com/enterprise/discovery/methods#drafts_list for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -604,7 +571,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         """The discovery.draft.info endpoint provides information associated with a singular draft.
         Refer to https://api.slack.com/enterprise/discovery/methods#drafts_info for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -636,7 +602,6 @@ class DiscoveryClient(BaseDiscoveryClient):
         """This method returns files uploaded within a specified timeframe.
         Refer to https://api.slack.com/enterprise/discovery/methods#files_list for more details.
         """
-
         kwargs.update(
             {
                 "token": token,
@@ -648,13 +613,10 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
         return self.api_call("discovery.files.list", http_method="GET", params=kwargs)
 
-    def discovery_file_info(
-        self, *, token: Optional[str] = None, file: str, **kwargs
-    ) -> DiscoveryResponse:
+    def discovery_file_info(self, *, token: Optional[str] = None, file: str, **kwargs) -> DiscoveryResponse:
         """All file comments are shown here. File comments are Slack's odd message type.
         Refer to https://api.slack.com/enterprise/discovery/methods#file_info for more details.
         """
-
         kwargs.update({"token": token, "file": file})
         return self.api_call("discovery.file.info", http_method="GET", params=kwargs)
 
@@ -671,17 +633,10 @@ class DiscoveryClient(BaseDiscoveryClient):
         because it will not be accessible after tombstoning.
         Refer to https://api.slack.com/enterprise/discovery/methods#file_tombstone for more details.
         """
+        kwargs.update({"token": token, "file": file, "title": title, "content": content})
+        return self.api_call("discovery.file.tombstone", http_method="POST", params=kwargs)
 
-        kwargs.update(
-            {"token": token, "file": file, "title": title, "content": content}
-        )
-        return self.api_call(
-            "discovery.file.tombstone", http_method="POST", params=kwargs
-        )
-
-    def discovery_file_restore(
-        self, *, token: Optional[str] = None, file: str, **kwargs
-    ) -> DiscoveryResponse:
+    def discovery_file_restore(self, *, token: Optional[str] = None, file: str, **kwargs) -> DiscoveryResponse:
         """Restores a tombstoned file, making it accessible again.
         Refer to https://api.slack.com/enterprise/discovery/methods#file_restore for more details.
         """
@@ -691,13 +646,9 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "file": file,
             }
         )
-        return self.api_call(
-            "discovery.file.restore", http_method="POST", params=kwargs
-        )
+        return self.api_call("discovery.file.restore", http_method="POST", params=kwargs)
 
-    def discovery_file_delete(
-        self, *, token: Optional[str] = None, file: str, **kwargs
-    ) -> DiscoveryResponse:
+    def discovery_file_delete(self, *, token: Optional[str] = None, file: str, **kwargs) -> DiscoveryResponse:
         """Deletes a file.
         Refer to https://api.slack.com/enterprise/discovery/methods#file_delete for more details.
         """
@@ -709,9 +660,7 @@ class DiscoveryClient(BaseDiscoveryClient):
         )
         return self.api_call("discovery.file.delete", http_method="POST", params=kwargs)
 
-    def discovery_files_release(
-        self, *, token: Optional[str] = None, files: str, **kwargs
-    ) -> DiscoveryResponse:
+    def discovery_files_release(self, *, token: Optional[str] = None, files: str, **kwargs) -> DiscoveryResponse:
         """The discovery.files.release endpoint can be used to release files that that been auto-tombstoned by the
         pre-processing setting. The endpoint accepts an array of files that should be released for viewing in the UI.
         Refer to https://api.slack.com/enterprise/discovery/methods#files_release for more details.
@@ -722,6 +671,4 @@ class DiscoveryClient(BaseDiscoveryClient):
                 "files": files,
             }
         )
-        return self.api_call(
-            "discovery.files.release", http_method="POST", params=kwargs
-        )
+        return self.api_call("discovery.files.release", http_method="POST", params=kwargs)

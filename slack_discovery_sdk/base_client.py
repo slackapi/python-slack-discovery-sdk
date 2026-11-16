@@ -66,9 +66,7 @@ class BaseDiscoveryClient:
         self.ssl = ssl
         self.proxy = proxy
         self.headers = headers or {}
-        self.headers["User-Agent"] = get_user_agent(
-            user_agent_prefix, user_agent_suffix
-        )
+        self.headers["User-Agent"] = get_user_agent(user_agent_prefix, user_agent_suffix)
         self.default_params = {}
         if team_id is not None:
             self.default_params["team_id"] = team_id
@@ -100,6 +98,7 @@ class BaseDiscoveryClient:
         auth: Optional[dict] = None,
     ) -> DiscoveryResponse:
         """Create a request and execute the API call to Slack.
+
         Args:
             api_method (str): The target Slack API method.
                 e.g. 'discovery.enterprise.info'
@@ -115,11 +114,11 @@ class BaseDiscoveryClient:
                 from the response can be accessed like a dict.
                 If the response included 'next_cursor' it can
                 be iterated on to execute subsequent requests.
+
         Raises:
             SlackApiError: The following Slack API call failed:
                 'discovery.enterprise.info'.
         """
-
         api_url = _get_url(self.base_url, api_method)
         headers = headers or {}
         headers.update(self.headers)
@@ -130,14 +129,10 @@ class BaseDiscoveryClient:
                 headers["Authorization"] = auth
             elif isinstance(auth, dict):
                 client_id, client_secret = auth["client_id"], auth["client_secret"]
-                value = b64encode(
-                    f"{client_id}:{client_secret}".encode("utf-8")
-                ).decode("ascii")
+                value = b64encode(f"{client_id}:{client_secret}".encode("utf-8")).decode("ascii")
                 headers["Authorization"] = f"Basic {value}"
             else:
-                self.logger.warning(
-                    f"As the auth: {auth}: {type(auth)} is unsupported, skipped"
-                )
+                self.logger.warning(f"As the auth: {auth}: {type(auth)} is unsupported, skipped")
 
         token = self.token
         params = params or {}
@@ -189,6 +184,7 @@ class BaseDiscoveryClient:
         additional_headers: Dict[str, str],
     ) -> DiscoveryResponse:
         """Performs a Slack API request and returns the result.
+
         Args:
             token: Slack API Token (either bot token or user token)
             url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
@@ -197,7 +193,6 @@ class BaseDiscoveryClient:
         Returns:
             API response
         """
-
         # True/False -> "1"/"0"
         params = convert_bool_to_0_or_1(params)
         request_headers = self._build_urllib_request_headers(
@@ -240,15 +235,16 @@ class BaseDiscoveryClient:
         params: Dict[str, str],
     ) -> Dict[str, any]:  # type:ignore
         """Performs an HTTP request and parses the response.
+
         Args:
             url: Complete URL (e.g., https://slack.com/api/discovery.enterprise.info)
             args: args has "headers" and "params"
                 "headers": Dict[str, str]
                 "params": Dict[str, str],
+
         Returns:
             dict {status: int, headers: Headers, body: str}
         """
-
         url_elements = url.split("/")
         if len(url_elements) >= 2:
             api_method = url_elements[-1].split("?")[0]  # remove query string
@@ -280,16 +276,10 @@ class BaseDiscoveryClient:
                         headers=headers,
                     )
                 elif http_method == "GET":
-                    url = (
-                        f"{url}&{url_encoded_params}"
-                        if "?" in url
-                        else f"{url}?{url_encoded_params}"
-                    )
+                    url = f"{url}&{url_encoded_params}" if "?" in url else f"{url}?{url_encoded_params}"
                     req = Request(method="GET", url=url, headers=headers)
                 else:
-                    raise DiscoveryRequestError(
-                        f"Unsupported HTTP method: {http_method}"
-                    )
+                    raise DiscoveryRequestError(f"Unsupported HTTP method: {http_method}")
 
                 opener: Optional[OpenerDirector] = None
                 if self.proxy is not None:
@@ -299,9 +289,7 @@ class BaseDiscoveryClient:
                             HTTPSHandler(context=self.ssl),
                         )
                     else:
-                        raise DiscoveryRequestError(
-                            f"Invalid proxy detected: {self.proxy} must be a str value"
-                        )
+                        raise DiscoveryRequestError(f"Invalid proxy detected: {self.proxy} must be a str value")
 
                 # NOTE: BAN-B310 is already checked above
                 resp: Optional[HTTPResponse] = None
@@ -313,9 +301,7 @@ class BaseDiscoveryClient:
                     )
 
                 charset = resp.headers.get_content_charset() or "utf-8"
-                url_encoded_params: str = resp.read().decode(
-                    charset
-                )  # read the response body here
+                url_encoded_params: str = resp.read().decode(charset)  # read the response body here
                 self._print_response_debug_log(
                     status_code=resp.code,
                     headers=resp.headers,
@@ -387,19 +373,11 @@ class BaseDiscoveryClient:
             def convert_params(values: dict) -> dict:
                 if not values or not isinstance(values, dict):
                     return {}
-                return {
-                    k: ("(bytes)" if isinstance(v, bytes) else v)
-                    for k, v in values.items()
-                }
+                return {k: ("(bytes)" if isinstance(v, bytes) else v) for k, v in values.items()}
 
-            headers = {
-                k: "(redacted)" if k.lower() == "authorization" else v
-                for k, v in headers.items()
-            }
+            headers = {k: "(redacted)" if k.lower() == "authorization" else v for k, v in headers.items()}
             self.logger.debug(
-                f"Sending a request - {http_method} {url}, "
-                f"params: {convert_params(params)}, "
-                f"headers: {headers}"
+                f"Sending a request - {http_method} {url}, params: {convert_params(params)}, headers: {headers}"
             )
 
     def _print_response_debug_log(
@@ -411,22 +389,14 @@ class BaseDiscoveryClient:
     ):
         if status_code >= 400:
             self.logger.error(
-                "Received the following response - "
-                f"status: {status_code}, "
-                f"headers: {dict(headers)}, "
-                f"body: {body}"
+                f"Received the following response - status: {status_code}, headers: {dict(headers)}, body: {body}"
             )
         elif self.logger.level <= logging.DEBUG:
             self.logger.debug(
-                "Received the following response - "
-                f"status: {status_code}, "
-                f"headers: {dict(headers)}, "
-                f"body: {body}"
+                f"Received the following response - status: {status_code}, headers: {dict(headers)}, body: {body}"
             )
 
-    def _build_urllib_request_headers(
-        self, *, token: str, additional_headers: dict
-    ) -> Dict[str, str]:
+    def _build_urllib_request_headers(self, *, token: str, additional_headers: dict) -> Dict[str, str]:
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         headers.update(self.headers)
         if token:
@@ -442,9 +412,7 @@ class BaseDiscoveryClient:
     ):
         if self.rate_limit_error_prevention_enabled is True:
             # Check the current traffic
-            sleep_duration: float = self.rate_limiter.calculate_sleep_duration(
-                api_method
-            )
+            sleep_duration: float = self.rate_limiter.calculate_sleep_duration(api_method)
             if self.logger.level <= logging.DEBUG:
                 report = self.rate_limiter.generate_metrics_report()
                 self.logger.debug(f"""Rate limit metrics: {report}""")

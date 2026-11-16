@@ -1,6 +1,8 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
-import logging, os, json
+import logging
+import os
+import json
 from slack_discovery_sdk import DiscoveryClient  # type: ignore
 from utils import export_json_to_file  # type: ignore
 

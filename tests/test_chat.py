@@ -19,9 +19,7 @@ class TestChat:
         self.team = os.environ[SLACK_DISCOVERY_SDK_TEST_TEAM_ID]
         self.channel = os.environ[SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID]
         self.client = DiscoveryClient(token=self.token)
-        self.web_client = WebClient(
-            token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN]
-        )
+        self.web_client = WebClient(token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN])
 
     def test_tombstone(self):
         expected_message_subtype = "dlp_tombstone"
@@ -112,17 +110,13 @@ class TestChat:
                 )
 
     def test_restore(self):
-        restore_msg_text = (
-            "The Discovery API will first tombstone this message and then restore it..."
-        )
+        restore_msg_text = "The Discovery API will first tombstone this message and then restore it..."
         try:
             conversations = self.web_client.users_conversations(team_id=self.team)
             assert conversations.get("error") is None
 
             tombstone_channel = conversations["channels"][0]["id"]
-            message_to_restore = self.web_client.chat_postMessage(
-                channel=tombstone_channel, text=restore_msg_text
-            )
+            message_to_restore = self.web_client.chat_postMessage(channel=tombstone_channel, text=restore_msg_text)
             assert message_to_restore.get("error") is None
 
             tombstone_msg_resp = self.client.discovery_chat_tombstone(
