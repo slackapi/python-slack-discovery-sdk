@@ -8,7 +8,7 @@
 > 🚨 Note: This SDK is only accessible to customer developers with access to the Discovery API (Enterprise accounts) or partners who have been onboarded to the Security and Compliance partner program. To learn more about the Discovery APIs, please [visit our help center](https://slack.com/help/articles/360002079527-A-guide-to-Slacks-Discovery-APIs). 🚨
 
 ## Prerequisites For Using the SDK
-* Python version 3.6 or greater
+* Python version 3.7 or greater
 * Latest version of pip
 * A token with discovery scopes (`discovery:read` and or `discovery:write`)
   > Note: Please see the [OAuth guide](https://api.slack.com/enterprise/discovery/oauth-guide) on how to get this token if you don't already have one.
@@ -60,7 +60,7 @@ To view all of the methods offered by the SDK, please see the [client.py file](h
 In order to speed up the development process, we've provided you with a script called 
 `set_env_vars.sh` in the scripts folder to automate a few things needed to run the SDK. 
 The script accomplishes the following things using the following code:
-* Prints your current Python version (**you will need Python version 3.6 or greater for this SDK**) 
+* Prints your current Python version (**you will need Python version 3.7 or greater for this SDK**) 
   ```bash
   python3 --version
   ```
@@ -75,7 +75,7 @@ The script accomplishes the following things using the following code:
   ```
 * Installs required packages and dependencies
   ```bash
-  pip install -e ".[testing]"
+  ./scripts/install.sh
   ```
 
 ## 👨🏻‍💻 Adding Env Variables to Setup Script 👩🏻‍💻
@@ -238,11 +238,11 @@ And then, setting the bot / user tokens in the env variables as below:
 
 ```bash
 # Setup your virtual environment
-python --version  # make sure if you're using Python 3.6+
+python --version  # make sure if you're using Python 3.7+
 python -m venv .venv
 source .venv/bin/activate
 pip install -U pip
-pip install -e ".[testing]"
+./scripts/install.sh
 
 # Set required env variables
 # 1. An admin user token with discovery:read, discovery:write
@@ -256,6 +256,8 @@ export SLACK_DISCOVERY_SDK_TEST_TEAM_ID=T1234567890
 #    SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN should have the access to this channel
 export SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID=C1234567890
 pytest tests/
+
+# Without SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN, the tests that call the Discovery API are skipped
 
 # You can check logs/pytest.log for trouble shooting
 ```

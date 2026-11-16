@@ -16,6 +16,7 @@ from tests.env_variable_names import (
 )
 
 
+@pytest.mark.live
 class TestConversations:
     def setup_method(self):
         self.token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]

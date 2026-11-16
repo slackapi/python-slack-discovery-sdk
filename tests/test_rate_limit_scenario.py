@@ -8,6 +8,7 @@ from tests.env_variable_names import SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN
 from concurrent.futures.thread import ThreadPoolExecutor
 
 
+@pytest.mark.live
 class TestEnterprise:
     def setup_method(self):
         self.token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]

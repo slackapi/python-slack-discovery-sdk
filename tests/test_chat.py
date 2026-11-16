@@ -1,6 +1,7 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
 import os
+import pytest
 from slack_sdk import WebClient
 from slack_discovery_sdk import DiscoveryClient
 from .env_variable_names import (
@@ -11,6 +12,7 @@ from .env_variable_names import (
 )
 
 
+@pytest.mark.live
 class TestChat:
     def setup_method(self):
         self.token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
