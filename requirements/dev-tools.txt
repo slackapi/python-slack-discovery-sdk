@@ -2,3 +2,7 @@
 
 # ruff
 ruff==0.17.4
+
+# mypy
+# Note: mypy 2 requires Python >=3.9; the type check runs on the latest Python only.
+mypy>=2.4.1,<3; python_version >= "3.9"

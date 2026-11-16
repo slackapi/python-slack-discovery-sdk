@@ -3,10 +3,13 @@
 """A Python module for interacting and consuming responses from Slack."""
 
 import logging
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
-from .errors import DiscoveryApiError  # type:ignore
-from .internal_utils import _next_cursor_is_present  # type:ignore
+from .errors import DiscoveryApiError
+from .internal_utils import _next_cursor_is_present
+
+if TYPE_CHECKING:
+    from .base_client import BaseDiscoveryClient
 
 
 _LATEST_OFFSET_APIS = [
@@ -53,16 +56,16 @@ class DiscoveryResponse:
         removed at anytime.
     """
 
-    def __init__(  # type: ignore
+    def __init__(
         self,
         *,
-        client: "BaseDiscoveryClient",  # noqa: F821
+        client: "BaseDiscoveryClient",
         http_method: str,
         api_url: str,
         request_headers: dict,
         request_params: Optional[dict],
         raw_body: str,
-        body: dict,
+        body: Optional[dict],
         headers: dict,
         status_code: int,
     ):

@@ -78,3 +78,7 @@ filterwarnings = [
 	'ignore:"@coroutine" decorator is deprecated since Python 3.8, use "async def" instead:DeprecationWarning',
 	"ignore:The loop argument is deprecated since Python 3.8, and scheduled for removal in Python 3.10.:DeprecationWarning",
 ]
+
+[tool.mypy]
+files = "slack_discovery_sdk/"
+warn_unused_ignores = true
