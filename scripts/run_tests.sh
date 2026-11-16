@@ -7,6 +7,8 @@ cd ${script_dir}/..
 
 test_target="$1"
 
+./scripts/format.sh --no-install
+
 # Run tests
 if [[ $test_target != "" ]]; then
   pytest -vv $test_target
