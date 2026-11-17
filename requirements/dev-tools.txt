@@ -1,7 +1,7 @@
 # pip install -r requirements/dev-tools.txt
 
 # ruff
-ruff==0.17.4
+ruff==0.17.5
 
 # mypy
 # Note: mypy 2 requires Python >=3.9; the type check runs on the latest Python only.
