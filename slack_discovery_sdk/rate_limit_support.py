@@ -76,20 +76,14 @@ class RateLimiter:
         with self.lock:
             now = time.time()
             self.org_call_histories_in_last_second.append(now)
-            api_method_histories = self.api_method_call_histories_in_last_minute.get(
-                api_method, []
-            )
+            api_method_histories = self.api_method_call_histories_in_last_minute.get(api_method, [])
             api_method_histories.append(now)
-            self.api_method_call_histories_in_last_minute[
-                api_method
-            ] = api_method_histories
+            self.api_method_call_histories_in_last_minute[api_method] = api_method_histories
 
     def append_api_call_result(self, api_method: str, is_success: bool):
         with self.lock:
             if is_success is True:
-                new_count = (
-                    self.api_method_successful_call_counts.get(api_method, 0) + 1
-                )
+                new_count = self.api_method_successful_call_counts.get(api_method, 0) + 1
                 self.api_method_successful_call_counts[api_method] = new_count
             else:
                 new_count = self.api_method_failed_call_counts.get(api_method, 0) + 1
@@ -100,9 +94,7 @@ class RateLimiter:
         sleep_seconds = 0
 
         # The estimated count of all the requests performed in the last second
-        last_second_org_call_count = (
-            len(self.org_call_histories_in_last_second) * self.number_of_nodes
-        )
+        last_second_org_call_count = len(self.org_call_histories_in_last_second) * self.number_of_nodes
 
         # Calculate the sleep_seconds considering the last second traffic
         if last_second_org_call_count >= 10:
@@ -121,10 +113,8 @@ class RateLimiter:
         last_minute_api_method_call_count = len(last_minutes_api_method_requests)
 
         # Calculate the sleep_seconds considering the last minute traffic toward the endpoint
-        max_requests_for_api_method = (
-            self.max_requests_per_minute_for_each_api_method.get(
-                api_method, self.MAX_REQUESTS_PER_MINUTE_FOR_API_METHOD
-            )
+        max_requests_for_api_method = self.max_requests_per_minute_for_each_api_method.get(
+            api_method, self.MAX_REQUESTS_PER_MINUTE_FOR_API_METHOD
         )
         denominator = max_requests_for_api_method / 15  # this value is usually 80
         if last_minute_api_method_call_count >= max_requests_for_api_method * 0.9:
@@ -139,17 +129,12 @@ class RateLimiter:
             # Change the pace from 60 seconds to 30 seconds
             sleep_seconds = 30 / denominator
 
-        if (
-            max_requests_for_api_method >= 120
-            and last_minute_api_method_call_count >= max_requests_for_api_method / 120
-        ):
+        if max_requests_for_api_method >= 120 and last_minute_api_method_call_count >= max_requests_for_api_method / 120:
             # Burst traffic:
             # Change the pace from 60 seconds to 180 seconds
             three_seconds_ago = time.time() - 3
             requests_in_last_three_seconds = [
-                timestamp
-                for timestamp in last_minutes_api_method_requests
-                if timestamp >= three_seconds_ago
+                timestamp for timestamp in last_minutes_api_method_requests if timestamp >= three_seconds_ago
             ]
             if len(requests_in_last_three_seconds) >= max_requests_for_api_method / 120:
                 sleep_seconds = 180 / denominator
@@ -166,8 +151,7 @@ class RateLimiter:
             "enterprise_id": self.enterprise_id,
             "last_second_requests": len(self.org_call_histories_in_last_second),
             "last_minute_requests_per_api_method": {
-                k: len(v)
-                for k, v in self.api_method_call_histories_in_last_minute.items()
+                k: len(v) for k, v in self.api_method_call_histories_in_last_minute.items()
             },
             "successful_call_counts": self.api_method_successful_call_counts,
             "failed_call_counts": self.api_method_failed_call_counts,

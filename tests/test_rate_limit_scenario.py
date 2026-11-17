@@ -55,18 +55,14 @@ class TestEnterprise:
     @pytest.mark.skip
     def test_discovery_conversations_list(self):
         executor = ThreadPoolExecutor(max_workers=100)
-        client = DiscoveryClient(
-            token=self.token, rate_limit_error_prevention_enabled=True
-        )
+        client = DiscoveryClient(token=self.token, rate_limit_error_prevention_enabled=True)
 
         def run():
             for i in range(10):
                 for page in client.discovery_conversations_list(limit=10):
                     assert page.status_code == 200
                     for channel in page.get("channels"):
-                        response = client.discovery_conversations_info(
-                            channel=channel.get("id")
-                        )
+                        response = client.discovery_conversations_info(channel=channel.get("id"))
                         assert response.status_code == 200
 
         try:

@@ -45,7 +45,5 @@ class TestDraft:
             user = response["drafts"][0]["user_id"]
             team = response["drafts"][0]["team_id"]
             draft = response["drafts"][0]["id"]
-            info_response = self.client.discovery_draft_info(
-                team=team, draft=draft, user=user, limit=resp_limit
-            )
+            info_response = self.client.discovery_draft_info(team=team, draft=draft, user=user, limit=resp_limit)
             assert info_response["error"] is None

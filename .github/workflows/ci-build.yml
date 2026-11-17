@@ -13,6 +13,23 @@ env:
   LATEST_SUPPORTED_PY: "3.15"
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Python ${{ env.LATEST_SUPPORTED_PY }}
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.LATEST_SUPPORTED_PY }}
+      - name: Run lint verification
+        run: ./scripts/lint.sh
+
   unittest:
     name: Unit tests
     runs-on: ubuntu-22.04

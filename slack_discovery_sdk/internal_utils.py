@@ -1,6 +1,9 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
-import platform, string, random, time
+import platform
+import string
+import random
+import time
 import sys
 from typing import Dict, Union, Optional, Any
 from urllib.parse import urljoin
@@ -8,13 +11,13 @@ from urllib.parse import urljoin
 from .version import __version__  # type:ignore
 
 
-def convert_bool_to_0_or_1(
-    params: Optional[Dict[str, Any]]
-) -> Optional[Dict[str, Any]]:
+def convert_bool_to_0_or_1(params: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     """Converts all bool values in dict to "0" or "1".
+
     Slack APIs safely accept "0"/"1" as boolean values.
     Using True/False (bool in Python) doesn't work with aiohttp.
     This method converts only the bool values in top-level of a given dict.
+
     Args:
         params: params as a dict
     Returns:
@@ -26,8 +29,8 @@ def convert_bool_to_0_or_1(
 
 
 def get_user_agent(prefix: Optional[str] = None, suffix: Optional[str] = None):
-    """Construct the user-agent header with the package info,
-    Python version and OS version.
+    """Construct the user-agent header with the package info, Python version and OS version.
+
     Returns:
         The user agent string.
         e.g. 'Python/3.6.7 slack_discovery_sdk/1.0.0 Darwin/17.7.0'
@@ -44,6 +47,7 @@ def get_user_agent(prefix: Optional[str] = None, suffix: Optional[str] = None):
 
 def _get_url(base_url: str, api_method: str) -> str:
     """Joins the base Slack URL and an API method to form an absolute URL.
+
     Args:
         base_url (str): The base URL
         api_method (str): The Slack Web API method. e.g. 'discovery.chat.delete'
@@ -55,8 +59,8 @@ def _get_url(base_url: str, api_method: str) -> str:
 
 
 def _next_cursor_is_present(data) -> bool:
-    """Determine if the response contains 'next_cursor'
-    and 'next_cursor' is not empty.
+    """Determine if the response contains 'next_cursor' and 'next_cursor' is not empty.
+
     Returns:
         A boolean value.
     """
@@ -76,9 +80,7 @@ def _to_0_or_1_if_bool(v: Any) -> Union[Any, str]:
 
 
 def _build_unexpected_body_error_message(body: str) -> str:
-    body_for_logging = "".join(
-        [line.strip() for line in body.replace("\r", "\n").split("\n")]
-    )
+    body_for_logging = "".join([line.strip() for line in body.replace("\r", "\n").split("\n")])
     if len(body_for_logging) > 100:
         body_for_logging = body_for_logging[:100] + "..."
     message = f"Received a response in a non-JSON format: {body_for_logging}"
@@ -87,9 +89,7 @@ def _build_unexpected_body_error_message(body: str) -> str:
 
 def get_random_string(length: int = 10) -> str:
     all_ascii_lowercase_chars = string.ascii_lowercase
-    random_string = "".join(
-        random.choice(all_ascii_lowercase_chars) for _ in range(length)
-    )
+    random_string = "".join(random.choice(all_ascii_lowercase_chars) for _ in range(length))
     return random_string
 
 
