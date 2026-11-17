@@ -4,9 +4,9 @@
 
 from typing import Optional, Union
 
-from .base_client import BaseDiscoveryClient  # type:ignore
-from .response import DiscoveryResponse  # type:ignore
-from .errors import DiscoveryRequestError  # type:ignore
+from .base_client import BaseDiscoveryClient
+from .response import DiscoveryResponse
+from .errors import DiscoveryRequestError
 
 
 class DiscoveryClient(BaseDiscoveryClient):

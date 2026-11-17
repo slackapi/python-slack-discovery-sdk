@@ -2,7 +2,7 @@
 
 import logging
 import os
-from slack_discovery_sdk import DiscoveryClient  # type: ignore
+from slack_discovery_sdk import DiscoveryClient
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

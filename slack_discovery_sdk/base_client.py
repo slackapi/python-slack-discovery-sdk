@@ -10,22 +10,22 @@ from base64 import b64encode
 from http.client import HTTPResponse
 from logging import Logger
 from ssl import SSLContext
-from typing import Dict
+from typing import Any, Dict
 from typing import Optional
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen, OpenerDirector, ProxyHandler, HTTPSHandler
 
-from .errors import DiscoveryRequestError, DiscoveryApiError  # type:ignore
+from .errors import DiscoveryRequestError, DiscoveryApiError
 from .internal_utils import (
     convert_bool_to_0_or_1,
     get_user_agent,
     _get_url,
     _build_unexpected_body_error_message,
-)  # type:ignore
-from .rate_limit_support import RateLimiter, calculate_random_jitter  # type:ignore
-from .response import DiscoveryResponse  # type:ignore
-from .proxy_support import load_http_proxy_from_env  # type:ignore
+)
+from .rate_limit_support import RateLimiter, calculate_random_jitter
+from .response import DiscoveryResponse
+from .proxy_support import load_http_proxy_from_env
 
 
 class BaseDiscoveryClient:
@@ -156,7 +156,7 @@ class BaseDiscoveryClient:
         api_url: str,
         headers: Dict[str, str],
         params: Dict[str, str],
-    ) -> Dict[str, any]:  # type:ignore
+    ) -> Dict[str, Any]:
         """This method is supposed to be used only for DiscoveryResponse pagination.
 
         You can paginate using Python's for iterator as below:
@@ -196,7 +196,7 @@ class BaseDiscoveryClient:
             API response
         """
         # True/False -> "1"/"0"
-        params = convert_bool_to_0_or_1(params)
+        form_params = convert_bool_to_0_or_1(params) or {}
         request_headers = self._build_urllib_request_headers(
             token=self.token if token is None else token,
             additional_headers=additional_headers,
@@ -205,7 +205,7 @@ class BaseDiscoveryClient:
             http_method=http_method,
             url=url,
             headers=request_headers,
-            params=params,
+            params=form_params,
         )
         raw_body = response.get("body", "")
         parsed_body: Optional[dict] = None
@@ -221,7 +221,7 @@ class BaseDiscoveryClient:
             http_method=http_method,
             api_url=url,
             request_headers=request_headers,
-            request_params=params,
+            request_params=form_params,
             raw_body=raw_body,
             body=parsed_body,
             headers=dict(response["headers"]),
@@ -234,8 +234,8 @@ class BaseDiscoveryClient:
         http_method: str = "POST",
         url: str,
         headers: Dict[str, str],
-        params: Dict[str, str],
-    ) -> Dict[str, any]:  # type:ignore
+        params: Dict[str, Any],
+    ) -> Dict[str, Any]:
         """Performs an HTTP request and parses the response.
 
         Args:
@@ -294,7 +294,7 @@ class BaseDiscoveryClient:
                         raise DiscoveryRequestError(f"Invalid proxy detected: {self.proxy} must be a str value")
 
                 # NOTE: BAN-B310 is already checked above
-                resp: Optional[HTTPResponse] = None
+                resp: HTTPResponse
                 if opener:
                     resp = opener.open(req, timeout=self.timeout)  # skipcq: BAN-B310
                 else:
@@ -303,20 +303,20 @@ class BaseDiscoveryClient:
                     )
 
                 charset = resp.headers.get_content_charset() or "utf-8"
-                url_encoded_params: str = resp.read().decode(charset)  # read the response body here
+                body = resp.read().decode(charset)
                 self._print_response_debug_log(
-                    status_code=resp.code,
-                    headers=resp.headers,
-                    body=url_encoded_params,
+                    status_code=resp.status,
+                    headers=dict(resp.headers.items()),
+                    body=body,
                 )
                 self.rate_limiter.append_api_call_result(
                     api_method=api_method,
                     is_success=True,
                 )
                 return {
-                    "status": resp.code,
+                    "status": resp.status,
                     "headers": resp.headers,
-                    "body": url_encoded_params,
+                    "body": body,
                 }
             raise DiscoveryRequestError(f"Invalid URL detected: {url}")
         except HTTPError as e:
@@ -324,21 +324,20 @@ class BaseDiscoveryClient:
                 api_method=api_method,
                 is_success=False,
             )
-            resp = {"status": e.code, "headers": e.headers}
-            # read the response body here
+            error_resp: Dict[str, Any] = {"status": e.code, "headers": e.headers}
             charset = e.headers.get_content_charset() or "utf-8"
-            url_encoded_params: str = e.read().decode(charset)
+            error_body = e.read().decode(charset)
             if e.code == 429:
                 self._print_response_debug_log(
                     status_code=e.code,
                     headers=dict(e.headers.items()),
-                    body=url_encoded_params,
+                    body=error_body,
                 )
                 # for compatibility with aiohttp
-                resp["headers"]["Retry-After"] = resp["headers"]["retry-after"]
+                error_resp["headers"]["Retry-After"] = error_resp["headers"]["retry-after"]
 
                 if self.rate_limit_error_prevention_enabled is True:
-                    sleep_seconds = int(resp["headers"]["retry-after"])
+                    sleep_seconds = int(error_resp["headers"]["retry-after"])
                     log_message = f"Going to sleep for {sleep_seconds} seconds as this client got a rate limited error..."
                     self.logger.info(log_message)
                     time.sleep(sleep_seconds + calculate_random_jitter(factor=5.0))
@@ -351,8 +350,8 @@ class BaseDiscoveryClient:
                         params=params,
                     )
 
-            resp["body"] = url_encoded_params
-            return resp
+            error_resp["body"] = error_body
+            return error_resp
 
         except Exception as err:
             self.rate_limiter.append_api_call_result(
@@ -385,9 +384,9 @@ class BaseDiscoveryClient:
     def _print_response_debug_log(
         self,
         *,
-        status_code: Optional[int] = None,
-        headers: Optional[Dict[str, str]] = None,
-        body: Optional[str] = None,
+        status_code: int,
+        headers: Dict[str, str],
+        body: str,
     ):
         if status_code >= 400:
             self.logger.error(
@@ -398,7 +397,7 @@ class BaseDiscoveryClient:
                 f"Received the following response - status: {status_code}, headers: {dict(headers)}, body: {body}"
             )
 
-    def _build_urllib_request_headers(self, *, token: str, additional_headers: dict) -> Dict[str, str]:
+    def _build_urllib_request_headers(self, *, token: Optional[str], additional_headers: dict) -> Dict[str, str]:
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         headers.update(self.headers)
         if token:
