@@ -1,13 +1,12 @@
 [build-system]
-requires = ["setuptools>=77"]
+requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "slack-discovery-sdk"
 dynamic = ["version", "readme"]
 description = "The Slack Discovery API SDK for Python"
-license = "MIT"
-license-files = ["LICENSE.md"]
+license = { text = "MIT" }
 authors = [{ name = "Slack Technologies, LLC", email = "opensource@slack.com" }]
 requires-python = ">=3.7"
 dependencies = []
@@ -16,6 +15,7 @@ classifiers = [
 	"Intended Audience :: Developers",
 	"Topic :: Communications :: Chat",
 	"Topic :: Office/Business",
+	"License :: OSI Approved :: MIT License",
 	"Programming Language :: Python",
 	"Programming Language :: Python :: 3 :: Only",
 	"Programming Language :: Python :: 3.7",
