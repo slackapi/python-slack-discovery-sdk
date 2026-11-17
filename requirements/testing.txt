@@ -2,7 +2,7 @@
 
 # slack_sdk
 # Note: used by the live tests to post the messages and files that the Discovery API reads.
-slack_sdk>=3.21.3,<4
+slack_sdk>=3.47.0,<4
 
 # pytest
 # Note: pytest 9 requires Python >=3.10; cap older interpreters below it.
