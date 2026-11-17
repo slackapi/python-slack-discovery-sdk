@@ -1,4 +1,4 @@
 # pip install -r requirements/dev-tools.txt
 
 # ruff
-ruff==0.17.4
+ruff==0.17.5
