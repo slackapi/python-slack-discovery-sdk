@@ -1,6 +1,8 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
-import logging, os, json
+import logging
+import os
+import json
 from slack_discovery_sdk import DiscoveryClient  # type: ignore
 from utils import export_json_to_file  # type: ignore
 
@@ -38,9 +40,7 @@ for conversation in list_of_conversations["channels"]:
     # Step 3 - Retrieve the message history for each conversation returned in Step 2
     # using discovery.conversations.history
 
-    channel_conversation = client.discovery_conversations_history(
-        channel=channel_id, team=team_id
-    )
+    channel_conversation = client.discovery_conversations_history(channel=channel_id, team=team_id)
 
     channel_conversation_json = json.dumps(channel_conversation.body, indent=4)
 
@@ -54,9 +54,7 @@ for conversation in list_of_conversations["channels"]:
             user_id=user_id,
         )
     else:
-        edits_response = client.discovery_conversations_edits(
-            channel=channel_id, team=team_id
-        )
+        edits_response = client.discovery_conversations_edits(channel=channel_id, team=team_id)
         # If has_edits is true, merge the edits into the conversation history file.
         channel_conversation.body["edits"] = edits_response["edits"]
         edits_response_json = json.dumps(channel_conversation.body, indent=4)

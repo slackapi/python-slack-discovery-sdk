@@ -1,6 +1,7 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
 
-import logging, os
+import logging
+import os
 from slack_discovery_sdk import DiscoveryClient  # type: ignore
 
 logging.basicConfig(level=logging.DEBUG)

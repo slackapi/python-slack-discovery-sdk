@@ -1,7 +1,9 @@
 # Copyright 2021, Slack Technologies, LLC. All rights reserved.
-from typing import Any
 
-import os, pytest, time, json
+import os
+import pytest
+import time
+import json
 from slack_sdk import WebClient
 from slack_discovery_sdk import DiscoveryClient
 from slack_discovery_sdk.internal_utils import (
@@ -16,15 +18,14 @@ from tests.env_variable_names import (
 )
 
 
+@pytest.mark.live
 class TestConversations:
     def setup_method(self):
         self.token = os.environ[SLACK_DISCOVERY_SDK_TEST_ENTERPRISE_TOKEN]
         self.team = os.environ[SLACK_DISCOVERY_SDK_TEST_TEAM_ID]
         self.channel = os.environ[SLACK_DISCOVERY_SDK_TEST_CHANNEL_ID]
         self.client = DiscoveryClient(token=self.token)
-        self.web_client = WebClient(
-            token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN]
-        )
+        self.web_client = WebClient(token=os.environ[SLACK_DISCOVERY_SDK_TEST_BOT_TOKEN])
 
     def test_conversations_search(self):
         first_msg_text = "This message will test the search API"
@@ -95,9 +96,7 @@ class TestConversations:
         conversations = []
         limit_size = 1
         page_num = 0
-        for page in self.client.discovery_conversations_history(
-            channel=self.channel, team=self.team, limit=limit_size
-        ):
+        for page in self.client.discovery_conversations_history(channel=self.channel, team=self.team, limit=limit_size):
             for message in page["messages"]:
                 conversations.append(json.dumps(message))
             page_num += 1
@@ -130,11 +129,7 @@ class TestConversations:
 
             # if there are multiple messages in the last minute, one of them should be the one from above
             found = next(
-                (
-                    message["text"]
-                    for message in response["messages"]
-                    if message["text"] == test_text
-                ),
+                (message["text"] for message in response["messages"] if message["text"] == test_text),
                 None,
             )
             assert found == test_text
@@ -150,9 +145,7 @@ class TestConversations:
 
     def test_conversations_edits_from_one_minute_ago(self):
         # this test will create a message, edit it, and find edited messgages in the last minute
-        updated_text = (
-            "this message has been edited via chat_updateMessage API in a test"
-        )
+        updated_text = "this message has been edited via chat_updateMessage API in a test"
         msg_to_edit = None
         try:
             msg_to_edit = self.web_client.chat_postMessage(
@@ -176,11 +169,7 @@ class TestConversations:
             assert response["error"] is None
             # if there are more than one edits, one of them should be the one from above
             found = next(
-                (
-                    edit["text"]
-                    for edit in response["edits"]
-                    if edit["text"] == updated_text
-                ),
+                (edit["text"] for edit in response["edits"] if edit["text"] == updated_text),
                 None,
             )
             assert found == updated_text
@@ -201,17 +190,11 @@ class TestConversations:
             # create channel for testing purposes - make sure we can get info on this channel
             test_channel = self.create_channel()
             test_channel_creation_time = test_channel["channel"]["created"]
-            response = self.client.discovery_conversations_info(
-                team=self.team, channel=test_channel["channel"]["id"]
-            )
+            response = self.client.discovery_conversations_info(team=self.team, channel=test_channel["channel"]["id"])
             assert response["error"] is None
             # if there are multiple channels, ensure we can find the one we created above
             found = next(
-                (
-                    info["created"]
-                    for info in response["info"]
-                    if info["created"] == test_channel_creation_time
-                ),
+                (info["created"] for info in response["info"] if info["created"] == test_channel_creation_time),
                 None,
             )
             assert found == test_channel_creation_time
@@ -219,30 +202,20 @@ class TestConversations:
         finally:
             # delete the test channel we created above
             if test_channel is not None:
-                self.web_client.conversations_archive(
-                    channel=test_channel["channel"]["id"]
-                )
+                self.web_client.conversations_archive(channel=test_channel["channel"]["id"])
 
     def test_conversations_members_new_channel(self):
         test_channel = None
         try:
             test_channel = self.create_channel()
-            convo_join_resp = self.web_client.conversations_join(
-                channel=test_channel["channel"]["id"]
-            )
+            convo_join_resp = self.web_client.conversations_join(channel=test_channel["channel"]["id"])
             channel_creator = convo_join_resp["channel"]["creator"]
-            response = self.client.discovery_conversations_members(
-                team=self.team, channel=test_channel["channel"]["id"]
-            )
+            response = self.client.discovery_conversations_members(team=self.team, channel=test_channel["channel"]["id"])
             assert response["error"] is None
 
             # loop through members to ensure the creator is one of the members of the channel
             found = next(
-                (
-                    member["id"]
-                    for member in response["members"]
-                    if member["id"] == channel_creator
-                ),
+                (member["id"] for member in response["members"] if member["id"] == channel_creator),
                 None,
             )
             assert found == channel_creator
@@ -250,9 +223,7 @@ class TestConversations:
         finally:
             # delete the test channel we created above
             if test_channel is not None:
-                self.web_client.conversations_archive(
-                    channel=test_channel["channel"]["id"]
-                )
+                self.web_client.conversations_archive(channel=test_channel["channel"]["id"])
 
     def test_conversations_renames(self):
         test_channel = None
@@ -260,23 +231,15 @@ class TestConversations:
             test_channel = self.create_channel()
             new_channel_name = get_random_string()
 
-            self.web_client.conversations_rename(
-                channel=test_channel["channel"]["id"], name=new_channel_name
-            )
+            self.web_client.conversations_rename(channel=test_channel["channel"]["id"], name=new_channel_name)
 
             # check for renames from the last minute, which should include the rename from above
-            response = self.client.discovery_conversations_renames(
-                team=self.team, oldest=get_timestamp_last_minute()
-            )
+            response = self.client.discovery_conversations_renames(team=self.team, oldest=get_timestamp_last_minute())
 
             assert response["error"] is None
             # if there are multiple renames, one of them should be the one from above
             found = next(
-                (
-                    rename["new_name"]
-                    for rename in response["renames"]
-                    if rename["new_name"] == new_channel_name
-                ),
+                (rename["new_name"] for rename in response["renames"] if rename["new_name"] == new_channel_name),
                 None,
             )
             assert found == new_channel_name
@@ -284,9 +247,7 @@ class TestConversations:
         finally:
             # delete the test channel we created above
             if test_channel is not None:
-                self.web_client.conversations_archive(
-                    channel=test_channel["channel"]["id"]
-                )
+                self.web_client.conversations_archive(channel=test_channel["channel"]["id"])
 
     def test_conversations_reactions(self):
         test_text = "This message will test reactions"
@@ -324,11 +285,7 @@ class TestConversations:
             assert response["error"] is None
             # if we have more than one reaction (which we should) check to make sure we have thumbs reaction
             found = next(
-                (
-                    reaction["name"]
-                    for reaction in response["reactions"]
-                    if reaction["name"] == smile_reaction
-                ),
+                (reaction["name"] for reaction in response["reactions"] if reaction["name"] == smile_reaction),
                 None,
             )
             assert found == smile_reaction

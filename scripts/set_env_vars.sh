@@ -2,7 +2,7 @@
 
 #!/bin/sh
 
-# check to make sure Python version >= 3.6 is installed
+# check to make sure Python version >= 3.7 is installed
 echo "Your current Python version is: "
 python3 --version
 
@@ -19,7 +19,7 @@ echo "Sucessfully updated pip"
 
 # Installs required packages and dependencies
 echo "Installing required packages"
-pip install -e ".[testing]"
+./scripts/install.sh
 echo "Sucessfully installed required packages"
 
 ############# Needed to run SDK ####################################

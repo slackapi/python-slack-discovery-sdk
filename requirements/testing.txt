@@ -1,0 +1,15 @@
+# pip install -r requirements/testing.txt
+
+# slack_sdk
+# Note: used by the live tests to post the messages and files that the Discovery API reads.
+slack_sdk>=3.21.3,<4
+
+# pytest
+# Note: pytest 9 requires Python >=3.10; cap older interpreters below it.
+pytest>=7.0.1,<9; python_version < "3.10"
+pytest>=9.1.1,<10; python_version >= "3.10"
+
+# pytest-cov
+# Note: pytest-cov 7.1+ requires Python >=3.9; cap older interpreters below it.
+pytest-cov>=4,<7.1.0; python_version < "3.9"
+pytest-cov>=7.1.0,<8; python_version >= "3.9"

@@ -1,0 +1,7 @@
+# pip install -r requirements/build.txt
+
+# twine
+twine
+
+# build
+build

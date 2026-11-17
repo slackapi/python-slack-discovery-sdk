@@ -35,11 +35,4 @@ class TestRateLimitSupport:
             rate_limiter.cleanup()
 
             assert len(rate_limiter.org_call_histories_in_last_second) == 3
-            assert (
-                len(
-                    rate_limiter.api_method_call_histories_in_last_minute[
-                        "discovery.enterprise.info"
-                    ]
-                )
-                == 3
-            )
+            assert len(rate_limiter.api_method_call_histories_in_last_minute["discovery.enterprise.info"]) == 3
