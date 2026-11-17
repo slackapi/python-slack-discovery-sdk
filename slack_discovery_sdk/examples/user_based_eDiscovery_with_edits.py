@@ -3,8 +3,8 @@
 import logging
 import os
 import json
-from slack_discovery_sdk import DiscoveryClient  # type: ignore
-from utils import export_json_to_file  # type: ignore
+from slack_discovery_sdk import DiscoveryClient
+from utils import export_json_to_file  # type: ignore[import-not-found]
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -41,11 +41,12 @@ for conversation in list_of_conversations["channels"]:
     # using discovery.conversations.history
 
     channel_conversation = client.discovery_conversations_history(channel=channel_id, team=team_id)
+    history = channel_conversation.body or {}
 
-    channel_conversation_json = json.dumps(channel_conversation.body, indent=4)
+    channel_conversation_json = json.dumps(history, indent=4)
 
     # Step 4 - check if the conversation has edits, and if it does, call the conversation.edits endpoint
-    if channel_conversation.body["has_edits"] is False:
+    if history["has_edits"] is False:
         export_json_to_file(
             new_items=channel_conversation_json,
             base_dir="./example-outputs/",
@@ -56,8 +57,8 @@ for conversation in list_of_conversations["channels"]:
     else:
         edits_response = client.discovery_conversations_edits(channel=channel_id, team=team_id)
         # If has_edits is true, merge the edits into the conversation history file.
-        channel_conversation.body["edits"] = edits_response["edits"]
-        edits_response_json = json.dumps(channel_conversation.body, indent=4)
+        history["edits"] = edits_response["edits"]
+        edits_response_json = json.dumps(history, indent=4)
         export_json_to_file(
             new_items=edits_response_json,
             base_dir="./example-outputs/",

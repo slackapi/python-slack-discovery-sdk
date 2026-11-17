@@ -2,10 +2,10 @@
 
 import logging
 import os
-from slack_discovery_sdk import DiscoveryClient  # type: ignore
+from slack_discovery_sdk import DiscoveryClient
 from slack_sdk import WebClient
 
-from utils import is_credit_card_number  # type: ignore
+from utils import is_credit_card_number  # type: ignore[import-not-found]
 
 logging.basicConfig(level=logging.DEBUG)
 

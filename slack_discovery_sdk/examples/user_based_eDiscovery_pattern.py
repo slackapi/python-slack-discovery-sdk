@@ -3,8 +3,8 @@
 import logging
 import os
 import json
-from slack_discovery_sdk import DiscoveryClient  # type: ignore
-from utils import export_json_to_file  # type: ignore
+from slack_discovery_sdk import DiscoveryClient
+from utils import export_json_to_file  # type: ignore[import-not-found]
 
 logging.basicConfig(level=logging.DEBUG)
 

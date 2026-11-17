@@ -8,7 +8,7 @@ import sys
 from typing import Dict, Union, Optional, Any
 from urllib.parse import urljoin
 
-from .version import __version__  # type:ignore
+from .version import __version__
 
 
 def convert_bool_to_0_or_1(params: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:

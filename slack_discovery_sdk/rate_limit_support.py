@@ -91,7 +91,7 @@ class RateLimiter:
 
     def calculate_sleep_duration(self, api_method: str) -> float:
         self.cleanup()
-        sleep_seconds = 0
+        sleep_seconds = 0.0
 
         # The estimated count of all the requests performed in the last second
         last_second_org_call_count = len(self.org_call_histories_in_last_second) * self.number_of_nodes
