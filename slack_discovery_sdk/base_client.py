@@ -10,8 +10,7 @@ from base64 import b64encode
 from http.client import HTTPResponse
 from logging import Logger
 from ssl import SSLContext
-from typing import Any, Dict
-from typing import Optional
+from typing import Any, Dict, Optional
 from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen, OpenerDirector, ProxyHandler, HTTPSHandler
